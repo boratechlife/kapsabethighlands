@@ -1,4 +1,34 @@
-<script setup>
+<script setup lang="ts">
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
+const creds = reactive({
+  email: "test@123.com",
+  password: "123456",
+});
+
+const { user, registerUser, loginUser } = useFirebaseAuth();
+
+// const userLoggedIN = await loginUser(creds.email, creds.password);
+
+// console.log("User", user);
+const nuxtApp = useNuxtApp();
+
+// await registerUser();
+// async function registerUser() {
+//   try {
+//     const { user } = await createUserWithEmailAndPassword(
+//       nuxtApp.$auth,
+//       creds.email,
+//       creds.password
+//     );
+//     console.log("REG", user);
+//   } catch (error: unknown) {
+//     if (error instanceof Error) {
+//       // handle error
+//     }
+//   }
+// }
+
 const openMenu = ref(false);
 </script>
 
@@ -267,7 +297,7 @@ const openMenu = ref(false);
           class="logo z-50 flex-none p-4 aspect-square bg-gradient-to-b from-[#002261] to-[#fff] w-full lg:w-[447px] rounded-full flex items-center justify-center"
         >
           <div
-            class="h-full w-full rounded-full bg-cover bg-no-repeat bg-white bg-[url('/img/director.jpg')]"
+            class="h-full w-full rounded-full blur-3xl bg-cover bg-no-repeat bg-white bg-[url('/img/director.jpg')]"
           ></div>
         </div>
 
