@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const creds = reactive({
   email: "test@123.com",
   password: "123456",
 });
 
-const { user, registerUser, loginUser } = useFirebaseAuth();
+// const { user, registerUser, loginUser } = useFirebaseAuth();
 
 // const userLoggedIN = await loginUser(creds.email, creds.password);
 
 // console.log("User", user);
-const nuxtApp = useNuxtApp();
+// const nuxtApp = useNuxtApp();
 
 // await registerUser();
 // async function registerUser() {
