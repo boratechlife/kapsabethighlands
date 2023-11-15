@@ -1,9 +1,10 @@
 <template>
   <Splide :options="{ rewind: true }" aria-label="My Favorite Images">
     <SplideSlide>
-      <div class="flex lg:h-[560px] 2xl:h-[700px] w-full">
+      <div class="flex lg:h-[560px] 2xl:h-[700px] w-full relative">
+        <UploadImage v-if="isEdit" name="image1" />
         <img
-          src="/img/781A5713.jpg"
+          :src="images[0]"
           class="h-full w-full object-cover"
           alt="Sample 1"
         />
@@ -11,8 +12,9 @@
     </SplideSlide>
     <SplideSlide>
       <div class="flex lg:h-[560px] 2xl:h-[700px] w-full">
+        <UploadImage v-if="isEdit" name="image2" />
         <img
-          src="/img/781A5728.jpg"
+          :src="images[1]"
           class="h-full w-full object-cover"
           alt="Sample 1"
         />
@@ -28,6 +30,21 @@ export default defineComponent({
   components: {
     Splide,
     SplideSlide,
+  },
+  data() {
+    return {
+      upload1: "",
+    };
+  },
+
+  props: {
+    isEdit: String,
+    images: {
+      type: Object,
+    },
+  },
+  mounted() {
+    console.log("Images", this.$nuxt);
   },
 });
 </script>
