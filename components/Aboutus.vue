@@ -1,7 +1,28 @@
 <script setup>
 const nuxtApp = useNuxtApp();
+const updatedData = useNuxtApp().$updateMenu;
 console.log("nuxtAppABOUT", nuxtApp.$aboutus);
 const aboutusImages = useNuxtApp().$aboutImages;
+
+async function handleChange(id, field, customId) {
+  console.log("Aboutus", customId);
+  var editableParagraph = document.getElementById(customId);
+
+  console.log("Content changed:", editableParagraph.innerText);
+  if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
+    if (field == "title") {
+      await updatedData("aboutus", id, {
+        title: editableParagraph.innerText,
+      });
+    }
+
+    if (field == "description") {
+      await updatedData("aboutus", id, {
+        description: editableParagraph.innerText,
+      });
+    }
+  }
+}
 </script>
 
 <template>
@@ -12,12 +33,33 @@ const aboutusImages = useNuxtApp().$aboutImages;
       <div class="w-full lg:w-1/2">
         <h4
           class="text-xl text-center text-[#002261] mb-4 lg:mb-10 lg:text-5xl font-bold"
+          contenteditable="true"
+          :id="nuxtApp.$aboutus[0].id"
+          @blur="
+            () =>
+              handleChange(
+                nuxtApp.$aboutus[0].id,
+                'title',
+                nuxtApp.$aboutus[0].id
+              )
+          "
         >
           {{ nuxtApp.$aboutus[0].data.title }}
         </h4>
 
         <div class="space-y-2 text-lg">
-          <p>
+          <p
+            contenteditable="true"
+            @blur="
+              () =>
+                handleChange(
+                  nuxtApp.$aboutus[0].id,
+                  'description',
+                  nuxtApp.$aboutus[0].id + nuxtApp.$aboutus[0].data.description
+                )
+            "
+            :id="nuxtApp.$aboutus[0].id + nuxtApp.$aboutus[0].data.description"
+          >
             {{ nuxtApp.$aboutus[0].data.description }}
           </p>
         </div>

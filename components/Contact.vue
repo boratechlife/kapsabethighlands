@@ -1,6 +1,33 @@
 <script setup>
 const nuxtApp = useNuxtApp();
 const contactus = nuxtApp.$contactus;
+
+const updatedData = useNuxtApp().$updateMenu;
+
+async function handleChange(id, field, customId) {
+  console.log("Statistics", customId);
+  var editableParagraph = document.getElementById(customId);
+
+  console.log("Content changed:", editableParagraph.innerText);
+  if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
+    if (field == "email") {
+      await updatedData("contactus", id, {
+        email: editableParagraph.innerText,
+      });
+    }
+    if (field == "phone") {
+      await updatedData("contactus", id, {
+        phone: editableParagraph.innerText,
+      });
+    }
+    if (field == "location") {
+      await updatedData("contactus", id, {
+        location: editableParagraph.innerText,
+      });
+    }
+  }
+}
+
 console.log("COMPO-CONTACT", contactus);
 </script>
 
@@ -39,7 +66,20 @@ console.log("COMPO-CONTACT", contactus);
                 </defs>
               </svg>
             </span>
-            <span class="text-[#5A5A5A]">{{ contactus[0].data.email }}</span>
+            <span
+              class="text-[#5A5A5A]"
+              contenteditable="true"
+              :id="contactus[0].id + 'contactus'"
+              @blur="
+                () =>
+                  handleChange(
+                    contactus[0].id,
+                    'email',
+                    contactus[0].id + 'contactus'
+                  )
+              "
+              >{{ contactus[0].data.email }}</span
+            >
           </div>
           <div class="flex gap-4 items-center">
             <span>
@@ -64,7 +104,20 @@ console.log("COMPO-CONTACT", contactus);
                 </defs>
               </svg>
             </span>
-            <span class="text-[#5A5A5A]">{{ contactus[0].data.phone }}</span>
+            <span
+              class="text-[#5A5A5A]"
+              contenteditable="true"
+              :id="contactus[0].id + 'phone'"
+              @blur="
+                () =>
+                  handleChange(
+                    contactus[0].id,
+                    'phone',
+                    contactus[0].id + 'phone'
+                  )
+              "
+              >{{ contactus[0].data.phone }}</span
+            >
           </div>
           <div class="flex gap-4 items-center">
             <svg
@@ -81,7 +134,21 @@ console.log("COMPO-CONTACT", contactus);
               />
             </svg>
 
-            <span class="max-w-[16rem]"> {{ contactus[0].data.location }}</span>
+            <span
+              class="max-w-[16rem]"
+              contenteditable="true"
+              :id="contactus[0].id + 'location'"
+              @blur="
+                () =>
+                  handleChange(
+                    contactus[0].id,
+                    'location',
+                    contactus[0].id + 'location'
+                  )
+              "
+            >
+              {{ contactus[0].data.location }}</span
+            >
           </div>
         </div>
         <div class="w-full lg:w-1/2">
