@@ -1,16 +1,32 @@
 <script setup>
-const upload1 = ref("");
+import { ref } from 'vue';
+
+const upload1 = ref('');
 const nuxtApp = useNuxtApp();
 
 const props = defineProps({
   name: String,
   folder: String,
 });
-function handleUpload(e) {
+
+// Declare the event
+const emit = defineEmits(['uploadSuccess']);
+
+async function handleUpload(e) {
   const file = e.target.files[0];
-  const fileName = "example.jpg";
+  const fileName = file.name; // Using the actual file name, or you can customize it as needed
   console.log(nuxtApp);
-  nuxtApp.$uploadImage.uploadImage(file, props.name, props.folder);
+  const newUrl = await nuxtApp.$uploadImage.uploadImage(
+    file,
+    props.name || fileName, // Use the passed name prop or the file's original name
+    props.folder
+  );
+  if (newUrl) {
+    console.log('Upload successful, URL:', newUrl);
+    emit('uploadSuccess', newUrl); // Emit the event with the new URL
+  } else {
+    console.error('Upload failed');
+  }
 }
 </script>
 

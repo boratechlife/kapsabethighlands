@@ -1,29 +1,36 @@
 <script setup>
 const dirmessage = useNuxtApp().$dirmessage;
 const directorsImages = useNuxtApp().$directorsImages;
+const imageUrl = ref(null);
 const updatedData = useNuxtApp().$updateMenu;
 async function handleChange(id, field, customId) {
-  console.log("Director", customId);
+  console.log('Director', customId);
   var editableParagraph = document.getElementById(customId);
 
-  console.log("Content changed:", editableParagraph.innerText);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    if (field == "title") {
-      await updatedData("director", id, {
+    if (field == 'title') {
+      await updatedData('director', id, {
         d_message: {
           title: editableParagraph.innerText,
         },
       });
-    } else if (field == "msg") {
-      await updatedData("director", id, {
+    } else if (field == 'msg') {
+      await updatedData('director', id, {
         msg: editableParagraph.innerText,
       });
     } else {
-      await updatedData("director", id, {
+      await updatedData('director', id, {
         name: editableParagraph.innerText,
       });
     }
   }
+}
+
+function handleUploadSuccess(newUrl) {
+  console.log('Uploaded image URL:', newUrl);
+  // Further processing with the new URL
+  imageUrl.value = newUrl;
 }
 </script>
 <template>
@@ -49,8 +56,12 @@ async function handleChange(id, field, customId) {
           :class="!directorsImages ? 'bg-[url(\'/img/director.jpg\')]' : ''"
           class="h-full w-full relative rounded-full overflow-hidden bg-cover bg-no-repeat bg-white"
         >
-          <img :src="directorsImages[0]" alt="" />
-          <UploadImage name="director" folder="directors" />
+          <img :src="imageUrl ? imageUrl : directorsImages[0]" alt="" />
+          <UploadImage
+            name="director"
+            folder="directors"
+            @uploadSuccess="handleUploadSuccess"
+          />
         </div>
       </div>
 
