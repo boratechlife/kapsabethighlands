@@ -1,23 +1,30 @@
 <script setup>
 const nuxtApp = useNuxtApp();
 const updatedData = useNuxtApp().$updateMenu;
-console.log("nuxtAppABOUT", nuxtApp.$aboutus);
+const imageUrl = ref([]);
+console.log('nuxtAppABOUT', nuxtApp.$aboutus);
 const aboutusImages = useNuxtApp().$aboutImages;
 
+function handleUploadSuccess(newUrl, index) {
+  console.log('Uploaded image URL:', newUrl);
+  // Further processing with the new URL
+  imageUrl.value[index] = newUrl;
+}
+
 async function handleChange(id, field, customId) {
-  console.log("Aboutus", customId);
+  console.log('Aboutus', customId);
   var editableParagraph = document.getElementById(customId);
 
-  console.log("Content changed:", editableParagraph.innerText);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    if (field == "title") {
-      await updatedData("aboutus", id, {
+    if (field == 'title') {
+      await updatedData('aboutus', id, {
         title: editableParagraph.innerText,
       });
     }
 
-    if (field == "description") {
-      await updatedData("aboutus", id, {
+    if (field == 'description') {
+      await updatedData('aboutus', id, {
         description: editableParagraph.innerText,
       });
     }
@@ -77,18 +84,22 @@ async function handleChange(id, field, customId) {
               v-if="aboutusImages"
             >
               <img
-                :src="aboutusImages[0]"
+                :src="imageUrl && imageUrl[0] ? imageUrl[0] : aboutusImages[0]"
                 alt=""
                 class="absolute h-full w-full object-cover"
               />
-              <UploadImage name="aboutus1" folder="aboutus" />
+              <UploadImage
+                name="aboutus1"
+                @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
+                folder="aboutus"
+              />
             </div>
 
             <div
               class="h-full w-full rounded-full bg-cover bg-no-repeat bg-white bg-[url('/img/781A6109.jpg')]"
               v-else
             >
-              <UploadImage name="aboutus1" folder="aboutus" />
+              <UploadImage name="aboutus2" folder="aboutus" />
             </div>
           </div>
 
@@ -101,18 +112,22 @@ async function handleChange(id, field, customId) {
               v-if="aboutusImages[1]"
             >
               <img
-                :src="aboutusImages[1]"
+                :src="imageUrl && imageUrl[1] ? imageUrl[1] : aboutusImages[1]"
                 alt=""
                 class="absolute h-full w-full object-cover"
               />
-              <UploadImage name="aboutus2" folder="aboutus" />
+              <UploadImage
+                name="aboutus3"
+                @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
+                folder="aboutus"
+              />
             </div>
 
             <div
               class="h-full w-full rounded-full relative overflow-hidden bg-cover bg-no-repeat bg-white bg-[url('/img/781A6141.jpg')]"
               v-else
             >
-              <UploadImage name="aboutus2" folder="aboutus" />
+              <UploadImage name="aboutus4" folder="aboutus" />
             </div>
           </div>
 
@@ -121,17 +136,21 @@ async function handleChange(id, field, customId) {
             v-if="aboutusImages[2]"
           >
             <img
-              :src="aboutusImages[2]"
+              :src="imageUrl && imageUrl[2] ? imageUrl[2] : aboutusImages[2]"
               alt=""
               class="absolute h-full w-full object-cover"
             />
-            <UploadImage name="aboutus3" folder="aboutus" />
+            <UploadImage
+              name="aboutus5"
+              folder="aboutus"
+              @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
+            />
           </div>
           <div
             class="h-full w-full rounded-full bg-cover relative bg-no-repeat bg-white bg-[url('/img/781A6167.jpg')]"
             v-else
           >
-            <UploadImage name="aboutus3" folder="aboutus" />
+            <UploadImage name="aboutus5" folder="aboutus" />
           </div>
         </div>
       </div>

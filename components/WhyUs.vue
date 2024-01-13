@@ -5,26 +5,34 @@ const whyus = nuxtApp.$whyus;
 const whyusimages = nuxtApp.$whyusImages;
 const updatedData = useNuxtApp().$updateMenu;
 
+const imageUrl = ref([]);
+
+function handleUploadSuccess(newUrl, index) {
+  console.log('Uploaded image URL:', newUrl);
+  // Further processing with the new URL
+  imageUrl.value[index] = newUrl;
+}
+
 async function handleChange(id, field, customId) {
-  console.log("Statistics", customId);
+  console.log('Statistics', customId);
   var editableParagraph = document.getElementById(customId);
 
-  console.log("Content changed:", editableParagraph.innerText);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    if (field == "title") {
-      await updatedData("whyus", id, {
+    if (field == 'title') {
+      await updatedData('whyus', id, {
         title: editableParagraph.innerText,
       });
     }
-    if (field == "description") {
-      await updatedData("whyus", id, {
+    if (field == 'description') {
+      await updatedData('whyus', id, {
         description: editableParagraph.innerText,
       });
     }
   }
 }
 
-console.log("Why us images", whyus);
+console.log('Why us images', whyus);
 </script>
 
 <template>
@@ -84,13 +92,17 @@ console.log("Why us images", whyus);
             v-if="!whyusimages"
           />
           <img
-            :src="whyusimages[0]"
+            :src="imageUrl && imageUrl[0] ? imageUrl[0] : whyusimages[0]"
             class="h-[364px] lg:h-[464px] aspect-square object-cover rounded rounded-tl-[53px] lg:rounded-tl-[103px] rounded-br-[43px] lg:rounded-br-[83px]"
             alt=""
             v-if="whyusimages && whyusimages[0]"
           />
 
-          <UploadImage name="image1" folder="whyus" />
+          <UploadImage
+            name="image1"
+            folder="whyus"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
+          />
         </div>
       </div>
 
@@ -136,7 +148,7 @@ console.log("Why us images", whyus);
         </div>
         <div class="w-full lg:w-1/2 flex justify-center relative">
           <img
-            :src="whyusimages[1]"
+            :src="imageUrl && imageUrl[1] ? imageUrl[1] : whyusimages[1]"
             class="h-[364px] lg:h-[464px] aspect-square object-cover rounded rounded-tl-[53px] lg:rounded-tl-[103px] rounded-br-[43px] lg:rounded-br-[83px]"
             alt=""
             v-if="whyusimages && whyusimages[1]"
@@ -148,7 +160,11 @@ console.log("Why us images", whyus);
             v-else
           />
 
-          <UploadImage name="image5" folder="whyus" />
+          <UploadImage
+            name="image5"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
+            folder="whyus"
+          />
         </div>
       </div>
 
@@ -194,7 +210,7 @@ console.log("Why us images", whyus);
         </div>
         <div class="w-full lg:w-1/2 flex justify-center relative">
           <img
-            :src="whyusimages[2]"
+            :src="imageUrl && imageUrl[2] ? imageUrl[2] : whyusimages[2]"
             class="h-[364px] lg:h-[464px] aspect-square object-cover rounded rounded-tl-[53px] lg:rounded-tl-[103px] rounded-br-[43px] lg:rounded-br-[83px]"
             alt=""
             v-if="whyusimages && whyusimages[2]"
@@ -206,7 +222,11 @@ console.log("Why us images", whyus);
             v-else
           />
 
-          <UploadImage name="image5" folder="whyus" />
+          <UploadImage
+            name="image5"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
+            folder="whyus"
+          />
         </div>
       </div>
 
@@ -252,7 +272,7 @@ console.log("Why us images", whyus);
         </div>
         <div class="w-full lg:w-1/2 flex justify-center relative">
           <img
-            :src="whyusimages[3]"
+            :src="imageUrl && imageUrl[3] ? imageUrl[3] : whyusimages[3]"
             class="h-[364px] lg:h-[464px] aspect-square object-cover rounded rounded-tl-[53px] lg:rounded-tl-[103px] rounded-br-[43px] lg:rounded-br-[83px]"
             alt=""
             v-if="whyusimages && whyusimages[3]"
@@ -264,7 +284,11 @@ console.log("Why us images", whyus);
             v-else
           />
 
-          <UploadImage name="image5" folder="whyus" />
+          <UploadImage
+            name="image5"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
+            folder="whyus"
+          />
         </div>
       </div>
 
@@ -310,7 +334,7 @@ console.log("Why us images", whyus);
         </div>
         <div class="w-full lg:w-1/2 flex justify-center relative">
           <img
-            :src="whyusimages[4]"
+            :src="imageUrl && imageUrl[4] ? imageUrl[4] : whyusimages[4]"
             class="h-[364px] lg:h-[464px] aspect-square object-cover rounded rounded-tl-[53px] lg:rounded-tl-[103px] rounded-br-[43px] lg:rounded-br-[83px]"
             alt=""
             v-if="whyusimages && whyusimages[4]"
@@ -322,7 +346,11 @@ console.log("Why us images", whyus);
             v-else
           />
 
-          <UploadImage name="image5" folder="whyus" />
+          <UploadImage
+            name="image5"
+            folder="whyus"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 4)"
+          />
         </div>
       </div>
     </div>

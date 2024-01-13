@@ -1,8 +1,15 @@
 <script setup>
 const nuxtApp = useNuxtApp();
 const galleryImages = nuxtApp.$galleryImages;
+const imageUrl = ref([]);
 
-console.log("Gallery images");
+function handleUploadSuccess(newUrl, index) {
+  console.log('Uploaded image URL:', newUrl);
+  // Further processing with the new URL
+  imageUrl.value[index] = newUrl;
+}
+
+console.log('Gallery images');
 </script>
 
 <template>
@@ -17,7 +24,7 @@ console.log("Gallery images");
       <div class="w-full grid grid-cols-4 row-auto cols-1">
         <div class="1 row-span-3 flex relative">
           <img
-            :src="galleryImages[0]"
+            :src="imageUrl && imageUrl[0] ? imageUrl[0] : galleryImages[0]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[0]"
@@ -29,11 +36,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image1" folder="gallery" />
+          <UploadImage
+            name="image1"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[1]"
+            :src="imageUrl && imageUrl[1] ? imageUrl[1] : galleryImages[1]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[1]"
@@ -45,11 +56,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image2" folder="gallery" />
+          <UploadImage
+            name="image2"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[2]"
+            :src="imageUrl && imageUrl[2] ? imageUrl[2] : galleryImages[2]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[2]"
@@ -61,11 +76,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image3" folder="gallery" />
+          <UploadImage
+            name="image3"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
+            folder="gallery"
+          />
         </div>
         <div class="row-span-2 relative">
           <img
-            :src="galleryImages[3]"
+            :src="imageUrl && imageUrl[3] ? imageUrl[3] : galleryImages[3]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[3]"
@@ -77,11 +96,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image4" folder="gallery" />
+          <UploadImage
+            name="image4"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[4]"
+            :src="imageUrl && imageUrl[4] ? imageUrl[4] : galleryImages[4]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[4]"
@@ -93,11 +116,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image5" folder="gallery" />
+          <UploadImage
+            name="image5"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 4)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[5]"
+            :src="imageUrl && imageUrl[5] ? imageUrl[5] : galleryImages[5]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[5]"
@@ -109,11 +136,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image6" folder="gallery" />
+          <UploadImage
+            name="image6"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 5)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[6]"
+            :src="imageUrl && imageUrl[6] ? imageUrl[6] : galleryImages[6]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[6]"
@@ -125,11 +156,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image7" folder="gallery" />
+          <UploadImage
+            name="image7"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 6)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[7]"
+            :src="imageUrl && imageUrl[7] ? imageUrl[7] : galleryImages[7]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[7]"
@@ -141,11 +176,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image8" folder="gallery" />
+          <UploadImage
+            name="image8"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 7)"
+            folder="gallery"
+          />
         </div>
         <div class="flex w-full bg-black relative">
           <img
-            :src="galleryImages[8]"
+            :src="imageUrl && imageUrl[8] ? imageUrl[8] : galleryImages[8]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[8]"
@@ -157,12 +196,16 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image9" folder="gallery" />
+          <UploadImage
+            name="image9"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 8)"
+            folder="gallery"
+          />
         </div>
 
         <div class="col-span-2 relative">
           <img
-            :src="galleryImages[9]"
+            :src="imageUrl && imageUrl[9] ? imageUrl[9] : galleryImages[9]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[9]"
@@ -174,11 +217,15 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image10" folder="gallery" />
+          <UploadImage
+            name="image10"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 9)"
+            folder="gallery"
+          />
         </div>
         <div class="col-span-2 relative">
           <img
-            :src="galleryImages[10]"
+            :src="imageUrl && imageUrl[10] ? imageUrl[10] : galleryImages[10]"
             class="object-cover h-full w-full"
             alt=""
             v-if="galleryImages && galleryImages[10]"
@@ -190,7 +237,11 @@ console.log("Gallery images");
             v-else
           />
 
-          <UploadImage name="image11" folder="gallery" />
+          <UploadImage
+            name="image11"
+            @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 10)"
+            folder="gallery"
+          />
         </div>
       </div>
     </div>
