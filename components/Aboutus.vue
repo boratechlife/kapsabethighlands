@@ -1,5 +1,8 @@
 <script setup>
 const nuxtApp = useNuxtApp();
+defineProps({
+  isEdit: Boolean,
+});
 const updatedData = useNuxtApp().$updateMenu;
 const imageUrl = ref([]);
 console.log('nuxtAppABOUT', nuxtApp.$aboutus);
@@ -40,7 +43,7 @@ async function handleChange(id, field, customId) {
       <div class="w-full lg:w-1/2">
         <h4
           class="text-xl text-center text-[#002261] mb-4 lg:mb-10 lg:text-5xl font-bold"
-          contenteditable="true"
+          :contenteditable="isEdit"
           :id="nuxtApp.$aboutus[0].id"
           @blur="
             () =>
@@ -56,7 +59,7 @@ async function handleChange(id, field, customId) {
 
         <div class="space-y-2 text-lg">
           <p
-            contenteditable="true"
+            :contenteditable="isEdit"
             @blur="
               () =>
                 handleChange(
@@ -90,6 +93,7 @@ async function handleChange(id, field, customId) {
               />
               <UploadImage
                 name="aboutus1"
+                v-if="isEdit"
                 @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
                 folder="aboutus"
               />
@@ -99,7 +103,7 @@ async function handleChange(id, field, customId) {
               class="h-full w-full rounded-full bg-cover bg-no-repeat bg-white bg-[url('/img/781A6109.jpg')]"
               v-else
             >
-              <UploadImage name="aboutus2" folder="aboutus" />
+              <UploadImage v-if="isEdit" name="aboutus2" folder="aboutus" />
             </div>
           </div>
 
@@ -118,6 +122,7 @@ async function handleChange(id, field, customId) {
               />
               <UploadImage
                 name="aboutus3"
+                v-if="isEdit"
                 @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
                 folder="aboutus"
               />
@@ -127,7 +132,7 @@ async function handleChange(id, field, customId) {
               class="h-full w-full rounded-full relative overflow-hidden bg-cover bg-no-repeat bg-white bg-[url('/img/781A6141.jpg')]"
               v-else
             >
-              <UploadImage name="aboutus4" folder="aboutus" />
+              <UploadImage v-if="isEdit" name="aboutus4" folder="aboutus" />
             </div>
           </div>
 
@@ -142,6 +147,7 @@ async function handleChange(id, field, customId) {
             />
             <UploadImage
               name="aboutus5"
+              v-if="isEdit"
               folder="aboutus"
               @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             />
@@ -150,7 +156,7 @@ async function handleChange(id, field, customId) {
             class="h-full w-full rounded-full bg-cover relative bg-no-repeat bg-white bg-[url('/img/781A6167.jpg')]"
             v-else
           >
-            <UploadImage name="aboutus5" folder="aboutus" />
+            <UploadImage v-if="isEdit" name="aboutus5" folder="aboutus" />
           </div>
         </div>
       </div>

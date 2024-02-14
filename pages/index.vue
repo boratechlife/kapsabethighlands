@@ -1,16 +1,16 @@
-<script setup lang="ts">
+<script setup>
 // import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const creds = reactive({
-  email: "test@123.com",
-  password: "123456",
+  email: 'test@123.com',
+  password: '123456',
 });
 
 const user = ref(null);
 const isEdit = ref(false);
 
 onMounted(() => {
-  user.value = JSON.parse(localStorage.getItem("user"));
+  user.value = JSON.parse(localStorage.getItem('user'));
 });
 // const { user, registerUser, loginUser } = useFirebaseAuth();
 
@@ -21,14 +21,14 @@ const nuxtApp = useNuxtApp();
 const content = nuxtApp.$homePageData?.documents;
 const images = nuxtApp.$heroImages;
 
-const updatedData = nuxtApp.$updateMenu as any;
+const updatedData = nuxtApp.$updateMenu;
 
-async function handleChange(id: string, elID: string) {
-  console.log("Chanhges", id);
-  var editableParagraph = document.getElementById(elID) as HTMLElement;
-  console.log("Content changed:", editableParagraph.innerText);
+async function handleChange(id, elID) {
+  console.log('Chanhges', id);
+  var editableParagraph = document.getElementById(elID);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    await updatedData("home", id, {
+    await updatedData('home', id, {
       text: editableParagraph.innerText,
     });
   }
@@ -134,6 +134,7 @@ const openMenu = ref(false);
           <template v-for="i in content">
             <a
               href="#"
+              :key="i.id"
               :id="i.id + 'home-3'"
               @blur="() => handleChange(i.id, i.id + 'home-3')"
               tabindex="1"
@@ -144,6 +145,7 @@ const openMenu = ref(false);
               >{{ i.data.text }}</a
             >
             <a
+              :key="i.id"
               class="bg-[#FE0A09] text-white rounded-[14px] px-6 py-2 text-xl"
               href="#contact"
               :id="i.id + 'home'"
@@ -157,11 +159,11 @@ const openMenu = ref(false);
           </template>
 
           <a
-            class="bg-[#563ad454] text-white rounded-[14px] px-6 py-2 text-xl"
-            @click.prevent="isEdit = true"
+            class="bg-[#563ad454] cursor-pointer text-white rounded-[14px] px-6 py-2 text-xl"
+            @click.prevent="isEdit = !isEdit"
             v-if="user"
           >
-            Edit
+            {{ isEdit ? 'Save' : 'Edit' }}
           </a>
         </div>
       </div>
@@ -176,21 +178,21 @@ const openMenu = ref(false);
     />
 
     <!-- FEATURE SECTION -->
-    <Feature />
+    <Feature :isEdit="isEdit" />
 
     <!-- DIRECTORS MESSAGE -->
-    <DirectorsMessage />
+    <DirectorsMessage :isEdit="isEdit" />
     <!-- ABOUT US -->
-    <Aboutus />
+    <Aboutus :isEdit="isEdit" />
 
     <!-- STATISTICS -->
-    <Statistics />
+    <Statistics :isEdit="isEdit" />
 
-    <WhyUs />
+    <WhyUs :isEdit="isEdit" />
 
-    <Gallery />
+    <Gallery :isEdit="isEdit" />
 
-    <Contact />
+    <Contact :isEdit="isEdit" />
 
     <footer class="py-20">
       <div class="container px-4 mx-auto lg:px-20">

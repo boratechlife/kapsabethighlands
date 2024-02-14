@@ -1,34 +1,38 @@
 <script setup>
 const nuxtApp = useNuxtApp();
+defineProps({
+  isEdit: Boolean,
+});
+
 const contactus = nuxtApp.$contactus;
 
 const updatedData = useNuxtApp().$updateMenu;
 
 async function handleChange(id, field, customId) {
-  console.log("Statistics", customId);
+  console.log('Statistics', customId);
   var editableParagraph = document.getElementById(customId);
 
-  console.log("Content changed:", editableParagraph.innerText);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    if (field == "email") {
-      await updatedData("contactus", id, {
+    if (field == 'email') {
+      await updatedData('contactus', id, {
         email: editableParagraph.innerText,
       });
     }
-    if (field == "phone") {
-      await updatedData("contactus", id, {
+    if (field == 'phone') {
+      await updatedData('contactus', id, {
         phone: editableParagraph.innerText,
       });
     }
-    if (field == "location") {
-      await updatedData("contactus", id, {
+    if (field == 'location') {
+      await updatedData('contactus', id, {
         location: editableParagraph.innerText,
       });
     }
   }
 }
 
-console.log("COMPO-CONTACT", contactus);
+console.log('COMPO-CONTACT', contactus);
 </script>
 
 <template>
@@ -68,7 +72,7 @@ console.log("COMPO-CONTACT", contactus);
             </span>
             <span
               class="text-[#5A5A5A]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               :id="contactus[0].id + 'contactus'"
               @blur="
                 () =>
@@ -106,7 +110,7 @@ console.log("COMPO-CONTACT", contactus);
             </span>
             <span
               class="text-[#5A5A5A]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               :id="contactus[0].id + 'phone'"
               @blur="
                 () =>
@@ -136,7 +140,7 @@ console.log("COMPO-CONTACT", contactus);
 
             <span
               class="max-w-[16rem]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               :id="contactus[0].id + 'location'"
               @blur="
                 () =>

@@ -47,7 +47,7 @@ export default defineComponent({
   },
 
   props: {
-    isEdit: String,
+    isEdit: Boolean,
     images: {
       type: Object,
     },

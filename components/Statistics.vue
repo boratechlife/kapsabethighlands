@@ -1,26 +1,29 @@
 <script setup>
 const nuxtApp = useNuxtApp();
+defineProps({
+  isEdit: Boolean,
+});
 const updatedData = useNuxtApp().$updateMenu;
 async function handleChange(id, field, customId) {
-  console.log("Statistics", customId);
+  console.log('Statistics', customId);
   var editableParagraph = document.getElementById(customId);
 
-  console.log("Content changed:", editableParagraph.innerText);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    if (field == "title") {
-      await updatedData("statistics", id, {
+    if (field == 'title') {
+      await updatedData('statistics', id, {
         title: editableParagraph.innerText,
       });
     }
-    if (field == "quantity") {
-      await updatedData("statistics", id, {
+    if (field == 'quantity') {
+      await updatedData('statistics', id, {
         quantity: parseInt(editableParagraph.innerText),
       });
     }
   }
 }
 
-console.log("STATS", nuxtApp.$statistics);
+console.log('STATS', nuxtApp.$statistics);
 </script>
 
 <template>
@@ -39,7 +42,7 @@ console.log("STATS", nuxtApp.$statistics);
       >
         <h4
           class="font-extrabold text-[40px] mb-2 text-[#002261]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -54,7 +57,7 @@ console.log("STATS", nuxtApp.$statistics);
         </h4>
         <p
           class="text-[20px]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -76,7 +79,7 @@ console.log("STATS", nuxtApp.$statistics);
       >
         <h4
           class="font-extrabold text-[40px] mb-2 text-[#002261]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -91,7 +94,7 @@ console.log("STATS", nuxtApp.$statistics);
         </h4>
         <p
           class="text-[20px]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -113,7 +116,7 @@ console.log("STATS", nuxtApp.$statistics);
       >
         <h4
           class="font-extrabold text-[40px] mb-2 text-[#002261]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -128,7 +131,7 @@ console.log("STATS", nuxtApp.$statistics);
         </h4>
         <p
           class="text-[20px]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -150,7 +153,7 @@ console.log("STATS", nuxtApp.$statistics);
       >
         <h4
           class="font-extrabold text-[40px] mb-2 text-[#002261]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -165,7 +168,7 @@ console.log("STATS", nuxtApp.$statistics);
         </h4>
         <p
           class="text-[20px]"
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(

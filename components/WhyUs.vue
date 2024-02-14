@@ -1,6 +1,8 @@
 <script setup>
 const nuxtApp = useNuxtApp();
-
+defineProps({
+  isEdit: Boolean,
+});
 const whyus = nuxtApp.$whyus;
 const whyusimages = nuxtApp.$whyusImages;
 const updatedData = useNuxtApp().$updateMenu;
@@ -56,7 +58,7 @@ console.log('Why us images', whyus);
             <h5
               class="text-[23px] lg:text-[33px] text-[#002261] font-bold mb-4"
               v-text="whyus[0].data.title"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -69,7 +71,7 @@ console.log('Why us images', whyus);
             ></h5>
             <p
               class="text-[18px] lg:text-[22px] text-[#616060]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -100,6 +102,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image1"
+            v-if="isEdit"
             folder="whyus"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
           />
@@ -118,7 +121,7 @@ console.log('Why us images', whyus);
             <h5
               class="text-[23px] lg:text-[33px] text-[#002261] font-bold mb-4"
               v-text="whyus[1].data.title"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -131,7 +134,7 @@ console.log('Why us images', whyus);
             ></h5>
             <p
               class="text-[18px] lg:text-[22px] text-[#616060]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -162,6 +165,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
             folder="whyus"
           />
@@ -180,7 +184,7 @@ console.log('Why us images', whyus);
             <h5
               class="text-[23px] lg:text-[33px] text-[#002261] font-bold mb-4"
               v-text="whyus[2].data.title"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -193,7 +197,7 @@ console.log('Why us images', whyus);
             ></h5>
             <p
               class="text-[18px] lg:text-[22px] text-[#616060]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -224,6 +228,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             folder="whyus"
           />
@@ -242,7 +247,7 @@ console.log('Why us images', whyus);
             <h5
               class="text-[23px] lg:text-[33px] text-[#002261] font-bold mb-4"
               v-text="whyus[3].data.title"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -255,7 +260,7 @@ console.log('Why us images', whyus);
             ></h5>
             <p
               class="text-[18px] lg:text-[22px] text-[#616060]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -286,6 +291,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             folder="whyus"
           />
@@ -304,7 +310,7 @@ console.log('Why us images', whyus);
             <h5
               class="text-[23px] lg:text-[33px] text-[#002261] font-bold mb-4"
               v-text="whyus[4].data.title"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -317,7 +323,7 @@ console.log('Why us images', whyus);
             ></h5>
             <p
               class="text-[18px] lg:text-[22px] text-[#616060]"
-              contenteditable="true"
+              :contenteditable="isEdit"
               @blur="
                 () =>
                   handleChange(
@@ -348,6 +354,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
+            v-if="isEdit"
             folder="whyus"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 4)"
           />

@@ -3,6 +3,10 @@ const nuxtApp = useNuxtApp();
 const galleryImages = nuxtApp.$galleryImages;
 const imageUrl = ref([]);
 
+defineProps({
+  isEdit: Boolean,
+});
+
 function handleUploadSuccess(newUrl, index) {
   console.log('Uploaded image URL:', newUrl);
   // Further processing with the new URL
@@ -38,6 +42,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image1"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
             folder="gallery"
           />
@@ -58,6 +63,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image2"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
             folder="gallery"
           />
@@ -78,6 +84,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image3"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             folder="gallery"
           />
@@ -98,6 +105,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image4"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             folder="gallery"
           />
@@ -118,6 +126,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image5"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 4)"
             folder="gallery"
           />
@@ -138,6 +147,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image6"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 5)"
             folder="gallery"
           />
@@ -158,6 +168,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image7"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 6)"
             folder="gallery"
           />
@@ -178,6 +189,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image8"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 7)"
             folder="gallery"
           />
@@ -198,6 +210,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image9"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 8)"
             folder="gallery"
           />
@@ -219,6 +232,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image10"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 9)"
             folder="gallery"
           />
@@ -239,6 +253,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image11"
+            v-if="isEdit"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 10)"
             folder="gallery"
           />

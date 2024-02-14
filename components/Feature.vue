@@ -3,12 +3,16 @@ const nuxtApp = useNuxtApp();
 
 const updatedData = nuxtApp.$updateMenu;
 
+defineProps({
+  isEdit: Boolean,
+});
+
 async function handleChange(id) {
-  console.log("Chanhges", id);
+  console.log('Chanhges', id);
   var editableParagraph = document.getElementById(id);
-  console.log("Content changed:", editableParagraph.innerText);
+  console.log('Content changed:', editableParagraph.innerText);
   if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
-    await updatedData("topbar", id, {
+    await updatedData('topbar', id, {
       name: editableParagraph.innerText,
     });
   }
@@ -42,7 +46,7 @@ async function handleChange(id) {
 
       <p
         class="text-[#002261]"
-        contenteditable="true"
+        :contenteditable="isEdit"
         :id="nuxtApp.$topbar[2].id"
         @blur="() => handleChange(nuxtApp.$topbar[2].id)"
         tabindex="1"
@@ -71,7 +75,7 @@ async function handleChange(id) {
 
       <p
         class="text-[#002261]"
-        contenteditable="true"
+        :contenteditable="isEdit"
         :id="nuxtApp.$topbar[0].id"
         @blur="() => handleChange(nuxtApp.$topbar[0].id)"
         tabindex="1"
@@ -100,7 +104,7 @@ async function handleChange(id) {
 
       <p
         class="text-[#002261]"
-        contenteditable="true"
+        :contenteditable="isEdit"
         :id="nuxtApp.$topbar[1].id"
         @blur="() => handleChange(nuxtApp.$topbar[1].id)"
         tabindex="1"
@@ -176,7 +180,7 @@ async function handleChange(id) {
       </svg>
       <p
         class="text-[#002261]"
-        contenteditable="true"
+        :contenteditable="isEdit"
         :id="nuxtApp.$topbar[3].id"
         @blur="() => handleChange(nuxtApp.$topbar[3].id)"
         tabindex="1"
@@ -204,7 +208,7 @@ async function handleChange(id) {
       </svg>
       <p
         class="text-[#002261]"
-        contenteditable="true"
+        :contenteditable="isEdit"
         :id="nuxtApp.$topbar[4].id"
         @blur="() => handleChange(nuxtApp.$topbar[4].id)"
         tabindex="1"

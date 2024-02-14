@@ -1,5 +1,8 @@
 <script setup>
 const dirmessage = useNuxtApp().$dirmessage;
+defineProps({
+  isEdit: Boolean,
+});
 const directorsImages = useNuxtApp().$directorsImages;
 const imageUrl = ref(null);
 const updatedData = useNuxtApp().$updateMenu;
@@ -59,6 +62,7 @@ function handleUploadSuccess(newUrl) {
           <img :src="imageUrl ? imageUrl : directorsImages[0]" alt="" />
           <UploadImage
             name="director"
+            v-if="isEdit"
             folder="directors"
             @uploadSuccess="handleUploadSuccess"
           />
@@ -67,7 +71,7 @@ function handleUploadSuccess(newUrl) {
 
       <div class="w-full lg:w-1/2">
         <h4
-          contenteditable="true"
+          :contenteditable="isEdit"
           :id="dirmessage[0].id"
           @blur="
             () => handleChange(dirmessage[0].id, 'title', dirmessage[0].id)
@@ -78,7 +82,7 @@ function handleUploadSuccess(newUrl) {
         </h4>
 
         <p
-          contenteditable="true"
+          :contenteditable="isEdit"
           @blur="
             () =>
               handleChange(
@@ -106,7 +110,7 @@ function handleUploadSuccess(newUrl) {
           </svg>
           <b
             class="text-[33px]"
-            contenteditable="true"
+            :contenteditable="isEdit"
             @blur="
               () =>
                 handleChange(
