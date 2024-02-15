@@ -1,10 +1,19 @@
 <script setup>
 const nuxtApp = useNuxtApp();
-const galleryImages = nuxtApp.$galleryImages;
+const galleryImages = ref(null);
+const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
+
 const imageUrl = ref([]);
+
+onMounted(async () => {
+  galleryImages.value = await getImagesFromDirectory('gallery');
+
+  console.log('galleryImages images', galleryImages.value);
+});
 
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
 
 function handleUploadSuccess(newUrl, index) {
@@ -18,7 +27,10 @@ console.log('Gallery images');
 
 <template>
   <div class="py-10 lg:py-20" id="gallery">
-    <div class="container px-0 lg:px-20 mx-auto flex flex-col gap-10 lg:gap-40">
+    <div
+      class="container px-0 lg:px-20 mx-auto flex flex-col gap-10 lg:gap-40"
+      v-if="galleryImages"
+    >
       <div class="w-full px-4 flex items-center justify-center">
         <h4 class="text-3xl text-[#002261] mb- lg:text-5xl font-bold">
           GALLERY
@@ -42,7 +54,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image1"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
             folder="gallery"
           />
@@ -63,7 +75,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image2"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
             folder="gallery"
           />
@@ -84,7 +96,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image3"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             folder="gallery"
           />
@@ -105,7 +117,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image4"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             folder="gallery"
           />
@@ -126,7 +138,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image5"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 4)"
             folder="gallery"
           />
@@ -147,7 +159,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image6"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 5)"
             folder="gallery"
           />
@@ -168,7 +180,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image7"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 6)"
             folder="gallery"
           />
@@ -189,7 +201,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image8"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 7)"
             folder="gallery"
           />
@@ -210,7 +222,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image9"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 8)"
             folder="gallery"
           />
@@ -232,7 +244,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image10"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 9)"
             folder="gallery"
           />
@@ -253,7 +265,7 @@ console.log('Gallery images');
 
           <UploadImage
             name="image11"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 10)"
             folder="gallery"
           />

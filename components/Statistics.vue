@@ -2,7 +2,16 @@
 const nuxtApp = useNuxtApp();
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
+
+const fetchCollectionData = nuxtApp.$fetchCollection;
+const statisticData = ref(null);
+onMounted(async () => {
+  const collectionData = await fetchCollectionData('statistics', '');
+  statisticData.value = collectionData;
+});
+
 const updatedData = useNuxtApp().$updateMenu;
 async function handleChange(id, field, customId) {
   console.log('Statistics', customId);
@@ -23,14 +32,14 @@ async function handleChange(id, field, customId) {
   }
 }
 
-console.log('STATS', nuxtApp.$statistics);
+console.log('STATS', statisticData);
 </script>
 
 <template>
   <div
     class="w-full py-20 flex lg:h-[432px] items-center justify-center bg-white lg:rounded-tl-[152px] lg:rounded-br-[95px]"
     id="statistic"
-    v-if="nuxtApp.$statistics"
+    v-if="statisticData"
   >
     <div
       class="container px-4 lg:px-20 mx-auto flex flex-wrap lg:flex-nowrap gap-4 justify-between"
@@ -46,14 +55,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[1].id,
+                statisticData[1].id,
                 'quantity',
-                nuxtApp.$statistics[1].id + nuxtApp.$statistics[1].data.quantity
+                statisticData[1].id + statisticData[1].data.quantity
               )
           "
-          :id="nuxtApp.$statistics[1].id + nuxtApp.$statistics[1].data.quantity"
+          :id="statisticData[1].id + statisticData[1].data.quantity"
         >
-          {{ nuxtApp.$statistics[1].data.quantity }}
+          {{ statisticData[1].data.quantity }}
         </h4>
         <p
           class="text-[20px]"
@@ -61,14 +70,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[1].id,
+                statisticData[1].id,
                 'title',
-                nuxtApp.$statistics[1].id + nuxtApp.$statistics[1].data.title
+                statisticData[1].id + statisticData[1].data.title
               )
           "
-          :id="nuxtApp.$statistics[1].id + nuxtApp.$statistics[1].data.title"
+          :id="statisticData[1].id + statisticData[1].data.title"
         >
-          {{ nuxtApp.$statistics[1].data.title }}
+          {{ statisticData[1].data.title }}
         </p>
       </div>
 
@@ -83,14 +92,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[3].id,
+                statisticData[3].id,
                 'quantity',
-                nuxtApp.$statistics[3].id + nuxtApp.$statistics[3].data.quantity
+                statisticData[3].id + statisticData[3].data.quantity
               )
           "
-          :id="nuxtApp.$statistics[3].id + nuxtApp.$statistics[3].data.quantity"
+          :id="statisticData[3].id + statisticData[3].data.quantity"
         >
-          {{ nuxtApp.$statistics[3].data.quantity }}
+          {{ statisticData[3].data.quantity }}
         </h4>
         <p
           class="text-[20px]"
@@ -98,14 +107,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[3].id,
+                statisticData[3].id,
                 'title',
-                nuxtApp.$statistics[3].id + nuxtApp.$statistics[3].data.title
+                statisticData[3].id + statisticData[3].data.title
               )
           "
-          :id="nuxtApp.$statistics[3].id + nuxtApp.$statistics[3].data.title"
+          :id="statisticData[3].id + statisticData[3].data.title"
         >
-          {{ nuxtApp.$statistics[3].data.title }}
+          {{ statisticData[3].data.title }}
         </p>
       </div>
 
@@ -120,14 +129,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[2].id,
+                statisticData[2].id,
                 'quantity',
-                nuxtApp.$statistics[2].id + nuxtApp.$statistics[2].data.quantity
+                statisticData[2].id + statisticData[2].data.quantity
               )
           "
-          :id="nuxtApp.$statistics[2].id + nuxtApp.$statistics[2].data.quantity"
+          :id="statisticData[2].id + statisticData[2].data.quantity"
         >
-          {{ nuxtApp.$statistics[2].data.quantity }}
+          {{ statisticData[2].data.quantity }}
         </h4>
         <p
           class="text-[20px]"
@@ -135,14 +144,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[2].id,
+                statisticData[2].id,
                 'title',
-                nuxtApp.$statistics[2].id + nuxtApp.$statistics[2].data.title
+                statisticData[2].id + statisticData[2].data.title
               )
           "
-          :id="nuxtApp.$statistics[2].id + nuxtApp.$statistics[2].data.title"
+          :id="statisticData[2].id + statisticData[2].data.title"
         >
-          {{ nuxtApp.$statistics[2].data.title }}
+          {{ statisticData[2].data.title }}
         </p>
       </div>
 
@@ -157,14 +166,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[0].id,
+                statisticData[0].id,
                 'quantity',
-                nuxtApp.$statistics[0].id + nuxtApp.$statistics[0].data.quantity
+                statisticData[0].id + statisticData[0].data.quantity
               )
           "
-          :id="nuxtApp.$statistics[0].id + nuxtApp.$statistics[0].data.quantity"
+          :id="statisticData[0].id + statisticData[0].data.quantity"
         >
-          {{ nuxtApp.$statistics[0].data.quantity }}
+          {{ statisticData[0].data.quantity }}
         </h4>
         <p
           class="text-[20px]"
@@ -172,14 +181,14 @@ console.log('STATS', nuxtApp.$statistics);
           @blur="
             () =>
               handleChange(
-                nuxtApp.$statistics[0].id,
+                statisticData[0].id,
                 'title',
-                nuxtApp.$statistics[0].id + nuxtApp.$statistics[0].data.title
+                statisticData[0].id + statisticData[0].data.title
               )
           "
-          :id="nuxtApp.$statistics[0].id + nuxtApp.$statistics[0].data.title"
+          :id="statisticData[0].id + statisticData[0].data.title"
         >
-          {{ nuxtApp.$statistics[0].data.title }}
+          {{ statisticData[0].data.title }}
         </p>
       </div>
     </div>

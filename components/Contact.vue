@@ -2,10 +2,17 @@
 const nuxtApp = useNuxtApp();
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
 
-const contactus = nuxtApp.$contactus;
+const contactus = ref(null);
 
+const fetchCollectionData = nuxtApp.$fetchCollection;
+
+onMounted(async () => {
+  const collectionData = await fetchCollectionData('contactus', '');
+  contactus.value = collectionData;
+});
 const updatedData = useNuxtApp().$updateMenu;
 
 async function handleChange(id, field, customId) {

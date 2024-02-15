@@ -3,7 +3,7 @@
     <SplideSlide>
       <div class="flex lg:h-[560px] 2xl:h-[700px] w-full relative">
         <UploadImage
-          v-if="isEdit"
+          v-if="isEdit && isLoggedIn"
           name="image1"
           @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
         />
@@ -17,7 +17,7 @@
     <SplideSlide>
       <div class="flex lg:h-[560px] 2xl:h-[700px] w-full">
         <UploadImage
-          v-if="isEdit"
+          v-if="isEdit && isLoggedIn"
           name="image2"
           @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
         />
@@ -48,6 +48,7 @@ export default defineComponent({
 
   props: {
     isEdit: Boolean,
+    isLoggedIn: Boolean,
     images: {
       type: Object,
     },

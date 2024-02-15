@@ -1,9 +1,25 @@
 <script setup>
-const dirmessage = useNuxtApp().$dirmessage;
+const dirmessage = ref(null);
+const nuxtApp = useNuxtApp();
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
-const directorsImages = useNuxtApp().$directorsImages;
+
+const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
+
+const fetchCollectionData = nuxtApp.$fetchCollection;
+const topbarData = ref(null);
+
+const directorsImages = ref(null);
+
+onMounted(async () => {
+  const collectionData = await fetchCollectionData('director', '');
+  dirmessage.value = collectionData;
+  directorsImages.value = await getImagesFromDirectory('directors');
+
+  console.log('Direcror images', directorsImages.value);
+});
 const imageUrl = ref(null);
 const updatedData = useNuxtApp().$updateMenu;
 async function handleChange(id, field, customId) {
@@ -44,6 +60,7 @@ function handleUploadSuccess(newUrl) {
   >
     <div
       class="container px-4 lg:px-20 mx-auto flex flex-wrap lg:flex-nowrap gap-4 items-center justify-between"
+      v-if="directorsImages"
     >
       <div
         class="logo z-40 flex-none p-4 aspect-square bg-gradient-to-b from-[#002261] to-[#fff] w-full lg:w-[447px] rounded-full flex items-center justify-center relative"
@@ -62,7 +79,7 @@ function handleUploadSuccess(newUrl) {
           <img :src="imageUrl ? imageUrl : directorsImages[0]" alt="" />
           <UploadImage
             name="director"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             folder="directors"
             @uploadSuccess="handleUploadSuccess"
           />

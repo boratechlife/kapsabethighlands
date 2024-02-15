@@ -2,11 +2,24 @@
 const nuxtApp = useNuxtApp();
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
 const updatedData = useNuxtApp().$updateMenu;
 const imageUrl = ref([]);
-console.log('nuxtAppABOUT', nuxtApp.$aboutus);
-const aboutusImages = useNuxtApp().$aboutImages;
+
+const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
+
+const aboutusImages = ref(null);
+
+const fetchCollectionData = nuxtApp.$fetchCollection;
+const aboutData = ref(null);
+
+onMounted(async () => {
+  aboutusImages.value = await getImagesFromDirectory('aboutus');
+  const collectionData = await fetchCollectionData('aboutus', '');
+  aboutData.value = collectionData;
+  console.log('aboutusImages images', aboutusImages.value);
+});
 
 function handleUploadSuccess(newUrl, index) {
   console.log('Uploaded image URL:', newUrl);
@@ -36,7 +49,7 @@ async function handleChange(id, field, customId) {
 </script>
 
 <template>
-  <div class="w-full py-10 lg:py-20" id="about" v-if="nuxtApp.$aboutus">
+  <div class="w-full py-10 lg:py-20" id="about" v-if="aboutData">
     <div
       class="container px-4 lg:px-20 mx-auto flex flex-wrap lg:flex-nowrap gap-4 items-center"
     >
@@ -44,17 +57,10 @@ async function handleChange(id, field, customId) {
         <h4
           class="text-xl text-center text-[#002261] mb-4 lg:mb-10 lg:text-5xl font-bold"
           :contenteditable="isEdit"
-          :id="nuxtApp.$aboutus[0].id"
-          @blur="
-            () =>
-              handleChange(
-                nuxtApp.$aboutus[0].id,
-                'title',
-                nuxtApp.$aboutus[0].id
-              )
-          "
+          :id="aboutData[0].id"
+          @blur="() => handleChange(aboutData[0].id, 'title', aboutData[0].id)"
         >
-          {{ nuxtApp.$aboutus[0].data.title }}
+          {{ aboutData[0].data.title }}
         </h4>
 
         <div class="space-y-2 text-lg">
@@ -63,18 +69,21 @@ async function handleChange(id, field, customId) {
             @blur="
               () =>
                 handleChange(
-                  nuxtApp.$aboutus[0].id,
+                  aboutData[0].id,
                   'description',
-                  nuxtApp.$aboutus[0].id + nuxtApp.$aboutus[0].data.description
+                  aboutData[0].id + aboutData[0].data.description
                 )
             "
-            :id="nuxtApp.$aboutus[0].id + nuxtApp.$aboutus[0].data.description"
+            :id="aboutData[0].id + aboutData[0].data.description"
           >
-            {{ nuxtApp.$aboutus[0].data.description }}
+            {{ aboutData[0].data.description }}
           </p>
         </div>
       </div>
-      <div class="w-full lg:w-1/2 flex justify-center py-14 lg:py-0">
+      <div
+        class="w-full lg:w-1/2 flex justify-center py-14 lg:py-0"
+        v-if="aboutusImages"
+      >
         <div
           class="logo z-50 flex-none p-4 lg:h-[481px] bg-gradient-to-b from-[#002261] to-[#fff] w-full aspect-square lg:w-[481px] rounded-full flex items-center justify-center relative"
         >
@@ -93,7 +102,7 @@ async function handleChange(id, field, customId) {
               />
               <UploadImage
                 name="aboutus1"
-                v-if="isEdit"
+                v-if="isEdit && isLoggedIn"
                 @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
                 folder="aboutus"
               />
@@ -103,7 +112,11 @@ async function handleChange(id, field, customId) {
               class="h-full w-full rounded-full bg-cover bg-no-repeat bg-white bg-[url('/img/781A6109.jpg')]"
               v-else
             >
-              <UploadImage v-if="isEdit" name="aboutus2" folder="aboutus" />
+              <UploadImage
+                v-if="isEdit && isLoggedIn"
+                name="aboutus2"
+                folder="aboutus"
+              />
             </div>
           </div>
 
@@ -122,7 +135,7 @@ async function handleChange(id, field, customId) {
               />
               <UploadImage
                 name="aboutus3"
-                v-if="isEdit"
+                v-if="isEdit && isLoggedIn"
                 @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
                 folder="aboutus"
               />
@@ -132,7 +145,11 @@ async function handleChange(id, field, customId) {
               class="h-full w-full rounded-full relative overflow-hidden bg-cover bg-no-repeat bg-white bg-[url('/img/781A6141.jpg')]"
               v-else
             >
-              <UploadImage v-if="isEdit" name="aboutus4" folder="aboutus" />
+              <UploadImage
+                v-if="isEdit && isLoggedIn"
+                name="aboutus4"
+                folder="aboutus"
+              />
             </div>
           </div>
 
@@ -147,7 +164,7 @@ async function handleChange(id, field, customId) {
             />
             <UploadImage
               name="aboutus5"
-              v-if="isEdit"
+              v-if="isEdit && isLoggedIn"
               folder="aboutus"
               @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             />
@@ -156,7 +173,11 @@ async function handleChange(id, field, customId) {
             class="h-full w-full rounded-full bg-cover relative bg-no-repeat bg-white bg-[url('/img/781A6167.jpg')]"
             v-else
           >
-            <UploadImage v-if="isEdit" name="aboutus5" folder="aboutus" />
+            <UploadImage
+              v-if="isEdit && isLoggedIn"
+              name="aboutus5"
+              folder="aboutus"
+            />
           </div>
         </div>
       </div>

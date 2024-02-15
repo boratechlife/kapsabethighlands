@@ -3,8 +3,16 @@ const nuxtApp = useNuxtApp();
 
 const updatedData = nuxtApp.$updateMenu;
 
+const fetchCollectionData = nuxtApp.$fetchCollection;
+const topbarData = ref(null);
+onMounted(async () => {
+  const collectionData = await fetchCollectionData('topbar', '');
+  topbarData.value = collectionData;
+});
+
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
 
 async function handleChange(id) {
@@ -24,7 +32,7 @@ async function handleChange(id) {
     class="container px-4 rounded-[21px] -mt-[80px] lg:-mt-[160px] z-40 lg:px-20 w-full bg-white flex flex-wrap lg:flex-nowrap items-center lg:h-[170px] justify-between"
     style="box-shadow: 0px 4px 58px -9px rgba(0, 0, 0, 0.25)"
     id="features"
-    v-if="nuxtApp.$topbar"
+    v-if="topbarData && topbarData.length > 0"
   >
     <!-- ITEM -->
     <div
@@ -47,11 +55,11 @@ async function handleChange(id) {
       <p
         class="text-[#002261]"
         :contenteditable="isEdit"
-        :id="nuxtApp.$topbar[2].id"
-        @blur="() => handleChange(nuxtApp.$topbar[2].id)"
+        :id="topbarData[2].id"
+        @blur="() => handleChange(topbarData[2].id)"
         tabindex="1"
       >
-        {{ nuxtApp.$topbar[2].data.name }}
+        {{ topbarData[2].data.name }}
       </p>
     </div>
 
@@ -76,11 +84,11 @@ async function handleChange(id) {
       <p
         class="text-[#002261]"
         :contenteditable="isEdit"
-        :id="nuxtApp.$topbar[0].id"
-        @blur="() => handleChange(nuxtApp.$topbar[0].id)"
+        :id="topbarData[0].id"
+        @blur="() => handleChange(topbarData[0].id)"
         tabindex="1"
       >
-        {{ nuxtApp.$topbar[0].data.name }}
+        {{ topbarData[0].data.name }}
       </p>
     </div>
 
@@ -105,11 +113,11 @@ async function handleChange(id) {
       <p
         class="text-[#002261]"
         :contenteditable="isEdit"
-        :id="nuxtApp.$topbar[1].id"
-        @blur="() => handleChange(nuxtApp.$topbar[1].id)"
+        :id="topbarData[1].id"
+        @blur="() => handleChange(topbarData[1].id)"
         tabindex="1"
       >
-        {{ nuxtApp.$topbar[1].data.name }}
+        {{ topbarData[1].data.name }}
       </p>
     </div>
 
@@ -181,11 +189,11 @@ async function handleChange(id) {
       <p
         class="text-[#002261]"
         :contenteditable="isEdit"
-        :id="nuxtApp.$topbar[3].id"
-        @blur="() => handleChange(nuxtApp.$topbar[3].id)"
+        :id="topbarData[3].id"
+        @blur="() => handleChange(topbarData[3].id)"
         tabindex="1"
       >
-        {{ nuxtApp.$topbar[3].data.name }}
+        {{ topbarData[3].data.name }}
       </p>
     </div>
 
@@ -209,11 +217,11 @@ async function handleChange(id) {
       <p
         class="text-[#002261]"
         :contenteditable="isEdit"
-        :id="nuxtApp.$topbar[4].id"
-        @blur="() => handleChange(nuxtApp.$topbar[4].id)"
+        :id="topbarData[4].id"
+        @blur="() => handleChange(topbarData[4].id)"
         tabindex="1"
       >
-        {{ nuxtApp.$topbar[4].data.name }}
+        {{ topbarData[4].data.name }}
       </p>
     </div>
   </div>

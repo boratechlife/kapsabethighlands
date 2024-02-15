@@ -2,12 +2,24 @@
 const nuxtApp = useNuxtApp();
 defineProps({
   isEdit: Boolean,
+  isLoggedIn: Boolean,
 });
-const whyus = nuxtApp.$whyus;
-const whyusimages = nuxtApp.$whyusImages;
+const whyus = ref(null);
+const whyusimages = ref(null);
 const updatedData = useNuxtApp().$updateMenu;
 
+const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
+
 const imageUrl = ref([]);
+
+const fetchCollectionData = nuxtApp.$fetchCollection;
+
+onMounted(async () => {
+  whyusimages.value = await getImagesFromDirectory('whyus');
+  const collectionData = await fetchCollectionData('whyus', 'order');
+  whyus.value = collectionData;
+  console.log('whyusimages images', whyusimages.value);
+});
 
 function handleUploadSuccess(newUrl, index) {
   console.log('Uploaded image URL:', newUrl);
@@ -39,7 +51,10 @@ console.log('Why us images', whyus);
 
 <template>
   <div class="py-10 lg:py-20" id="why-us" v-if="whyus">
-    <div class="container px-4 lg:px-20 mx-auto flex flex-col gap-20 lg:gap-40">
+    <div
+      class="container px-4 lg:px-20 mx-auto flex flex-col gap-20 lg:gap-40"
+      v-if="whyusimages"
+    >
       <div class="w-full flex items-center justify-center">
         <h4 class="text-3xl text-[#002261] mb- lg:text-5xl font-bold">
           WHY US
@@ -102,7 +117,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image1"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             folder="whyus"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
           />
@@ -165,7 +180,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
             folder="whyus"
           />
@@ -228,7 +243,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             folder="whyus"
           />
@@ -291,7 +306,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             folder="whyus"
           />
@@ -354,7 +369,7 @@ console.log('Why us images', whyus);
 
           <UploadImage
             name="image5"
-            v-if="isEdit"
+            v-if="isEdit && isLoggedIn"
             folder="whyus"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 4)"
           />

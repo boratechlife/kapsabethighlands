@@ -6,11 +6,34 @@ const creds = reactive({
   password: '123456',
 });
 
+// Logout function
+async function logout() {
+  try {
+    await nuxtApp.$auth.signOut(); // Sign out from Firebase Auth
+    localStorage.removeItem('user'); // Clear user data from localStorage
+    user.value = null; // Reset the user reactive variable
+    console.log('User logged out successfully');
+    // Redirect to login page or update UI accordingly
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+}
+
 const user = ref(null);
 const isEdit = ref(false);
 
+// Function to check if a user is logged in
+function isLoggedIn() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  // Check if the user object exists
+  // You may want to extend this check to validate token expiry or any other conditions
+  return !!user;
+}
+
 onMounted(() => {
   user.value = JSON.parse(localStorage.getItem('user'));
+
+  console.log('USER>>>>', user.value);
 });
 // const { user, registerUser, loginUser } = useFirebaseAuth();
 
@@ -18,8 +41,17 @@ onMounted(() => {
 
 // console.log("User", user);
 const nuxtApp = useNuxtApp();
-const content = nuxtApp.$homePageData?.documents;
-const images = nuxtApp.$heroImages;
+const content = ref(null);
+const images = ref(null);
+const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
+
+const fetchCollectionData = nuxtApp.$fetchCollection;
+const topbarData = ref(null);
+onMounted(async () => {
+  const collectionData = await fetchCollectionData('home', 'order');
+  content.value = collectionData;
+  images.value = await getImagesFromDirectory('images');
+});
 
 const updatedData = nuxtApp.$updateMenu;
 
@@ -54,13 +86,11 @@ const openMenu = ref(false);
 </script>
 
 <template>
-  <div
-    class="w-full flex flex-col py-4 lg:py-10 items-center justify-center"
-    v-if="content"
-  >
+  <div class="w-full flex flex-col py-4 lg:py-10 items-center justify-center">
     <nav
       class="flex lg:max-w-[1122px] items-center w-full px-4 lg:px-0 justify-between lg:justify-normal"
       id="home"
+      v-if="content"
     >
       <!-- MOBILE MENU -->
       <div
@@ -84,20 +114,22 @@ const openMenu = ref(false);
           </button>
         </div>
 
-        <ul class="flex flex-col gap-0 mt-6 text-lg divide-y">
-          <template v-for="i in content">
-            <li class="w-full px-5 py-2 hover:bg-gray-200 hover:text-red-500">
-              <a
-                class="text-[#002261]"
-                contenteditable="true"
-                :id="i.id + 'home-2'"
-                @blur="() => handleChange(i.id, i.id + 'home-2')"
-                tabindex="1"
-              >
-                {{ i.data.text }}
-              </a>
-            </li>
-          </template>
+        <ul class="flex flex-col gap-0 mt-6 text-lg divide-y" v-if="content">
+          <li
+            :key="i.id"
+            v-for="i in content"
+            class="w-full px-5 py-2 hover:bg-gray-200 hover:text-red-500"
+          >
+            <a
+              class="text-[#002261]"
+              contenteditable="true"
+              :id="i.id + 'home-2'"
+              @blur="() => handleChange(i.id, i.id + 'home-2')"
+              tabindex="1"
+            >
+              {{ i.data.text }}
+            </a>
+          </li>
         </ul>
       </div>
       <div
@@ -130,7 +162,7 @@ const openMenu = ref(false);
       <div
         class="hidden bg-white w-full lg:w-[915px] rounded-[49px] h-[92px] justify-end lg:flex items-center"
       >
-        <div class="flex gap-4 items-center">
+        <div class="flex gap-4 items-center" v-if="content">
           <template v-for="i in content">
             <a
               href="#"
@@ -161,10 +193,16 @@ const openMenu = ref(false);
           <a
             class="bg-[#563ad454] cursor-pointer text-white rounded-[14px] px-6 py-2 text-xl"
             @click.prevent="isEdit = !isEdit"
-            v-if="user"
+            v-if="isLoggedIn()"
           >
             {{ isEdit ? 'Save' : 'Edit' }}
           </a>
+
+          <div>
+            <!-- Example of conditional rendering based on login status -->
+            <button v-if="isLoggedIn()" @click="logout">Logout</button>
+            <a v-else href="/login">Login</a>
+          </div>
         </div>
       </div>
     </nav>
@@ -175,24 +213,25 @@ const openMenu = ref(false);
       v-if="images"
       :images="images"
       :isEdit="isEdit"
+      :isLoggedIn="isLoggedIn()"
     />
 
     <!-- FEATURE SECTION -->
-    <Feature :isEdit="isEdit" />
+    <Feature :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
 
     <!-- DIRECTORS MESSAGE -->
-    <DirectorsMessage :isEdit="isEdit" />
+    <DirectorsMessage :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
     <!-- ABOUT US -->
-    <Aboutus :isEdit="isEdit" />
+    <Aboutus :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
 
     <!-- STATISTICS -->
-    <Statistics :isEdit="isEdit" />
+    <Statistics :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
 
-    <WhyUs :isEdit="isEdit" />
+    <WhyUs :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
 
-    <Gallery :isEdit="isEdit" />
+    <Gallery :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
 
-    <Contact :isEdit="isEdit" />
+    <Contact :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
 
     <footer class="py-20">
       <div class="container px-4 mx-auto lg:px-20">

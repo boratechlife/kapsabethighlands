@@ -1,18 +1,19 @@
 <script setup>
 const { user, registerUser, loginUser } = useFirebaseAuth();
 
-const form = reactive({ email: "", password: "" });
+const form = reactive({ email: '', password: '' });
 
 async function handleLogin() {
-  if (form.email != " " && form.password != " ") {
+  const router = useRouter();
+  if (form.email != ' ' && form.password != ' ') {
     try {
       const isLoggin = await loginUser(form.email, form.password);
       // console.log("He", isLoggin);
-      if (isLoggin) {
-        console.log("User", localStorage.getItem("user"));
-      }
+
+      // console.log('User', localStorage.getItem('user'));
+      router.push('/'); // Redirect to the homepage
     } catch (e) {
-      console.log("ee", isLoggin);
+      console.log('ee', e);
     }
   }
 }

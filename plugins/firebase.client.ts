@@ -103,92 +103,19 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     console.log('Updated', updated);
   }
 
-  // Usage
-  const collectionName = 'home'; // Replace with the actual collection name
-  const documents = await getCollectionData(collectionName, 'order');
-
-  //GET topbar
-  const topbar = await getCollectionData('topbar', '');
-  console.log('tobbar', topbar);
-  //  await updateMenu('topbar', "RtzabOyYq4R58kcTZfSX",{
-  //     name:"Test"
-  //   } )
-
-  //GET Directors Message
-  const dirmessage = await getCollectionData('director', '');
-
-  //GET Aboutus
-  const aboutus = await getCollectionData('aboutus', '');
-
-  //GET Statistics
-  const statistics = await getCollectionData('statistics', '');
-
-  // WHY US
-  const whyus = await getCollectionData('whyus', 'order');
-
-  // Contact US
-  const contactus = await getCollectionData('contactus', '');
-
-  const heroImages = await getImagesFromDirectory('images');
-  const directorsImages = await getImagesFromDirectory('directors');
-  const aboutImages = await getImagesFromDirectory('aboutus');
-  const whyusImages = await getImagesFromDirectory('whyus');
-  const galleryImages = await getImagesFromDirectory('gallery');
-
   nuxtApp.vueApp.provide('auth', auth);
   nuxtApp.provide('auth', auth);
 
   nuxtApp.vueApp.provide('firestore', firestore);
   nuxtApp.provide('firestore', firestore);
 
-  nuxtApp.vueApp.provide('homePageData', { documents });
-  nuxtApp.provide('homePageData', { documents });
-
   nuxtApp.vueApp.provide('uploadImage', { uploadImage });
   nuxtApp.provide('uploadImage', { uploadImage });
 
-  // HERO IMAGES
-  nuxtApp.vueApp.provide('heroImages', { ...heroImages });
-  nuxtApp.provide('heroImages', { ...heroImages });
+  nuxtApp.provide('fetchCollection', getCollectionData);
+  nuxtApp.provide('getImagesFromDirectory', getImagesFromDirectory);
 
-  // Directors Image IMAGES
-  nuxtApp.vueApp.provide('directorsImages', { ...directorsImages });
-  nuxtApp.provide('directorsImages', { ...directorsImages });
-
-  //ABOUT IMAGES
-  nuxtApp.vueApp.provide('aboutImages', { ...aboutImages });
-  nuxtApp.provide('aboutImages', { ...aboutImages });
-
-  //WHY US IMAGES
-  nuxtApp.vueApp.provide('whyusImages', { ...whyusImages });
-  nuxtApp.provide('whyusImages', { ...whyusImages });
-  //GALLERY  IMAGES
-  nuxtApp.vueApp.provide('galleryImages', { ...galleryImages });
-  nuxtApp.provide('galleryImages', { ...galleryImages });
-
-  // TOPBAR TEXT
-  nuxtApp.vueApp.provide('topbar', { ...topbar });
-  nuxtApp.provide('topbar', { ...topbar });
   // TOPBAR TEXT
   nuxtApp.vueApp.provide('updateMenu', updateMenu);
   nuxtApp.provide('updateMenu', updateMenu);
-
-  //DIRECTOR
-  nuxtApp.vueApp.provide('dirmessage', { ...dirmessage });
-  nuxtApp.provide('dirmessage', { ...dirmessage });
-
-  //ABOUT US
-  nuxtApp.vueApp.provide('aboutus', { ...aboutus });
-  nuxtApp.provide('aboutus', { ...aboutus });
-
-  //STATISTICS  US
-  nuxtApp.vueApp.provide('statistics', { ...statistics });
-  nuxtApp.provide('statistics', { ...statistics });
-
-  //WHY  US
-  nuxtApp.vueApp.provide('whyus', { ...whyus });
-  nuxtApp.provide('whyus', { ...whyus });
-  //CONTACT  US
-  nuxtApp.vueApp.provide('contactus', { ...contactus });
-  nuxtApp.provide('contactus', { ...contactus });
 });
