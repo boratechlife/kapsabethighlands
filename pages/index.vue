@@ -6,14 +6,16 @@ const creds = reactive({
   password: '123456',
 });
 
+const router = useRouter();
 // Logout function
 async function logout() {
   try {
     await nuxtApp.$auth.signOut(); // Sign out from Firebase Auth
-    localStorage.removeItem('user'); // Clear user data from localStorage
+    window.localStorage.removeItem('user'); // Clear user data from localStorage
     user.value = null; // Reset the user reactive variable
     console.log('User logged out successfully');
     // Redirect to login page or update UI accordingly
+    router.push('/login');
   } catch (error) {
     console.error('Logout error:', error);
   }
@@ -21,20 +23,10 @@ async function logout() {
 
 const user = ref(null);
 const isEdit = ref(false);
+const isLoggedIn = ref(false);
 
 // Function to check if a user is logged in
-function isLoggedIn() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  // Check if the user object exists
-  // You may want to extend this check to validate token expiry or any other conditions
-  return !!user;
-}
 
-onMounted(() => {
-  user.value = JSON.parse(localStorage.getItem('user'));
-
-  console.log('USER>>>>', user.value);
-});
 // const { user, registerUser, loginUser } = useFirebaseAuth();
 
 // const userLoggedIN = await loginUser(creds.email, creds.password);
@@ -51,6 +43,13 @@ onMounted(async () => {
   const collectionData = await fetchCollectionData('home', 'order');
   content.value = collectionData;
   images.value = await getImagesFromDirectory('images');
+  user.value = JSON.parse(window.localStorage.getItem('user'));
+
+  // Check if the user object exists
+  // You may want to extend this check to validate token expiry or any other conditions
+  isLoggedIn.value = !!user;
+
+  console.log('USER>>>>', user.value);
 });
 
 const updatedData = nuxtApp.$updateMenu;
@@ -193,14 +192,14 @@ const openMenu = ref(false);
           <a
             class="bg-[#563ad454] cursor-pointer text-white rounded-[14px] px-6 py-2 text-xl"
             @click.prevent="isEdit = !isEdit"
-            v-if="isLoggedIn()"
+            v-if="isLoggedIn"
           >
             {{ isEdit ? 'Save' : 'Edit' }}
           </a>
 
           <div>
             <!-- Example of conditional rendering based on login status -->
-            <button v-if="isLoggedIn()" @click="logout">Logout</button>
+            <button v-if="isLoggedIn" @click="logout">Logout</button>
             <a v-else href="/login">Login</a>
           </div>
         </div>
@@ -213,25 +212,25 @@ const openMenu = ref(false);
       v-if="images"
       :images="images"
       :isEdit="isEdit"
-      :isLoggedIn="isLoggedIn()"
+      :isLoggedIn="isLoggedIn"
     />
 
     <!-- FEATURE SECTION -->
-    <Feature :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <Feature :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
 
     <!-- DIRECTORS MESSAGE -->
-    <DirectorsMessage :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <DirectorsMessage :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
     <!-- ABOUT US -->
-    <Aboutus :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <Aboutus :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
 
     <!-- STATISTICS -->
-    <Statistics :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <Statistics :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
 
-    <WhyUs :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <WhyUs :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
 
-    <Gallery :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <Gallery :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
 
-    <Contact :isEdit="isEdit" :isLoggedIn="isLoggedIn()" />
+    <Contact :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
 
     <footer class="py-20">
       <div class="container px-4 mx-auto lg:px-20">
