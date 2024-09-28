@@ -16,6 +16,8 @@ const fetchCollectionData = nuxtApp.$fetchCollection;
 
 onMounted(async () => {
   whyusimages.value = await getImagesFromDirectory('whyus');
+
+  console.log('whyusimages', whyusimages);
   const collectionData = await fetchCollectionData('whyus', 'order');
   whyus.value = collectionData;
   console.log('whyusimages images', whyusimages.value);
@@ -62,7 +64,7 @@ console.log('Why us images', whyus);
       </div>
 
       <!-- ITEM -->
-      <div class="item flex flex-wrap lg:flex-nowrap gap-4 items-center">
+      <!-- <div class="item flex flex-wrap lg:flex-nowrap gap-4 items-center">
         <div class="w-full lg:w-1/2 flex items-baseline gap-4">
           <div
             class="h-10 flex-none w-10 rounded-full bg-white flex items-center justify-center font-extrabold text-[23px] lg:text-[28px]"
@@ -122,7 +124,7 @@ console.log('Why us images', whyus);
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
           />
         </div>
-      </div>
+      </div> -->
 
       <!-- ITEM -->
       <div class="item flex flex-wrap lg:flex-nowrap gap-4 items-center">
@@ -179,7 +181,7 @@ console.log('Why us images', whyus);
           />
 
           <UploadImage
-            name="image5"
+            name="image2"
             v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
             folder="whyus"
@@ -242,7 +244,7 @@ console.log('Why us images', whyus);
           />
 
           <UploadImage
-            name="image5"
+            name="image3"
             v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
             folder="whyus"
@@ -305,7 +307,7 @@ console.log('Why us images', whyus);
           />
 
           <UploadImage
-            name="image5"
+            name="image4"
             v-if="isEdit && isLoggedIn"
             @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             folder="whyus"

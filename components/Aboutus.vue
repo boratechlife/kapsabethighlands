@@ -114,29 +114,29 @@ async function handleChange(id, field, customId) {
             >
               <UploadImage
                 v-if="isEdit && isLoggedIn"
-                name="aboutus2"
+                name="aboutus1"
+                @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 0)"
                 folder="aboutus"
               />
             </div>
           </div>
 
-          <!-- BOTTOM IMAGE -->
           <div
             class="absolute-logo-bottom absolute -bottom-[5rem] -left-2 lg:-left-8 z-50 flex-none p-4 h-[120px] aspect-square lg:h-[169px] bg-gradient-to-b from-[#002261] to-[#fff] lg:w-[169px] rounded-full flex items-center justify-center"
           >
             <div
               class="h-full w-full rounded-full bg-cover relative overflow-hidden bg-no-repeat bg-white bg-[url('/img/781A6141.jpg')]"
-              v-if="aboutusImages[1]"
+              v-if="aboutusImages[2]"
             >
               <img
-                :src="imageUrl && imageUrl[1] ? imageUrl[1] : aboutusImages[1]"
+                :src="imageUrl && imageUrl[2] ? imageUrl[2] : aboutusImages[2]"
                 alt=""
                 class="absolute h-full w-full object-cover"
               />
               <UploadImage
                 name="aboutus3"
                 v-if="isEdit && isLoggedIn"
-                @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 1)"
+                @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
                 folder="aboutus"
               />
             </div>
@@ -147,26 +147,27 @@ async function handleChange(id, field, customId) {
             >
               <UploadImage
                 v-if="isEdit && isLoggedIn"
-                name="aboutus4"
+                name="aboutus3"
                 folder="aboutus"
               />
             </div>
           </div>
-
+          <!-- 
+MIDDLE IMAGE -->
           <div
             class="h-full w-full rounded-full overflow-hidden relative bg-cover bg-no-repeat bg-white bg-[url('/img/781A6167.jpg')]"
-            v-if="aboutusImages[2]"
+            v-if="aboutusImages[3]"
           >
             <img
-              :src="imageUrl && imageUrl[2] ? imageUrl[2] : aboutusImages[2]"
+              :src="imageUrl && imageUrl[3] ? imageUrl[3] : aboutusImages[3]"
               alt=""
               class="absolute h-full w-full object-cover"
             />
             <UploadImage
-              name="aboutus5"
+              name="aboutus4"
               v-if="isEdit && isLoggedIn"
               folder="aboutus"
-              @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 2)"
+              @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             />
           </div>
           <div
@@ -177,6 +178,7 @@ async function handleChange(id, field, customId) {
               v-if="isEdit && isLoggedIn"
               name="aboutus5"
               folder="aboutus"
+              @uploadSuccess="(newUrl) => handleUploadSuccess(newUrl, 3)"
             />
           </div>
         </div>
