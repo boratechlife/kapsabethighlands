@@ -29,7 +29,7 @@ async function handleChange(id) {
 
 <template>
   <div
-    class="container px-4 rounded-[21px] -mt-[80px] lg:-mt-[160px] z-40 lg:px-20 w-full bg-white flex flex-wrap lg:flex-nowrap items-center lg:h-[170px] justify-between"
+    class="container px-4 rounded-[21px] mt-[80px]  z-40 lg:px-20 w-full bg-white flex flex-wrap lg:flex-nowrap items-center lg:h-[170px] justify-between"
     style="box-shadow: 0px 4px 58px -9px rgba(0, 0, 0, 0.25)"
     id="features"
     v-if="topbarData && topbarData.length > 0"

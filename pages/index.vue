@@ -1,260 +1,546 @@
 <script setup>
-// import { createUserWithEmailAndPassword } from "firebase/auth";
+// Refined imports and reactive state management
+import { ref, reactive, onMounted, computed } from 'vue';
+import { useRouter, useNuxtApp } from 'nuxt/app';
 
+// User authentication state
+const user = ref(null);
+const isEdit = ref(false);
+const isLoggedIn = computed(() => !!user.value);
+
+// Credentials for login (should be moved to a login component)
 const creds = reactive({
   email: 'test@123.com',
   password: '123456',
 });
 
+// Navigation state
+const activeSection = ref('home');
+const mobileMenuOpen = ref(false);
+
+// Application setup
 const router = useRouter();
-// Logout function
+const nuxtApp = useNuxtApp();
+
+// Data fetching utilities
+const fetchCollectionData = nuxtApp.$fetchCollection;
+const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
+const updatedData = nuxtApp.$updateMenu;
+
+// Content state
+const content = ref(null);
+const images = ref(null);
+
+// Theme configuration - centralized for easy updates
+const theme = reactive({
+  colors: {
+    primary: '#002261',
+    secondary: '#FE0A09',
+    accent: '#e3f2fd',
+    light: '#ffffff',
+    dark: '#212121',
+  },
+  fonts: {
+    heading: '"Montserrat", sans-serif',
+    body: '"Open Sans", sans-serif',
+  },
+  borderRadius: {
+    small: '8px',
+    medium: '14px',
+    large: '24px',
+    xl: '49px',
+    circle: '50%',
+  },
+  spacing: {
+    section: '80px',
+  },
+  shadows: {
+    default: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    elevated: '0 10px 25px rgba(0, 0, 0, 0.1)',
+  },
+  transitions: {
+    default: 'all 0.3s ease',
+  }
+});
+
+// Authentication functions
 async function logout() {
   try {
-    await nuxtApp.$auth.signOut(); // Sign out from Firebase Auth
-    window.localStorage.removeItem('user'); // Clear user data from localStorage
-    user.value = null; // Reset the user reactive variable
-    console.log('User logged out successfully');
-    // Redirect to login page or update UI accordingly
+    await nuxtApp.$auth.signOut();
+    window.localStorage.removeItem('user');
+    user.value = null;
     router.push('/login');
   } catch (error) {
     console.error('Logout error:', error);
   }
 }
 
-const user = ref(null);
-const isEdit = ref(false);
-const isLoggedIn = ref(false);
-
-// Function to check if a user is logged in
-
-// const { user, registerUser, loginUser } = useFirebaseAuth();
-
-// const userLoggedIN = await loginUser(creds.email, creds.password);
-
-// console.log("User", user);
-const nuxtApp = useNuxtApp();
-const content = ref(null);
-const images = ref(null);
-const getImagesFromDirectory = nuxtApp.$getImagesFromDirectory;
-
-const fetchCollectionData = nuxtApp.$fetchCollection;
-const topbarData = ref(null);
-onMounted(async () => {
-  const collectionData = await fetchCollectionData('home', 'order');
-  content.value = collectionData;
-  images.value = await getImagesFromDirectory('images');
-  user.value = JSON.parse(window.localStorage.getItem('user'));
-
-  // Check if the user object exists
-  // You may want to extend this check to validate token expiry or any other conditions
-  isLoggedIn.value = !!user;
-
-  console.log('USER>>>>', user.value);
-});
-
-const updatedData = nuxtApp.$updateMenu;
-
+// Content management
 async function handleChange(id, elID) {
-  console.log('Chanhges', id);
-  var editableParagraph = document.getElementById(elID);
-  console.log('Content changed:', editableParagraph.innerText);
-  if (editableParagraph.innerText && editableParagraph.innerText.length > 0) {
+  const editableParagraph = document.getElementById(elID);
+  if (editableParagraph && editableParagraph.innerText.trim().length > 0) {
     await updatedData('home', id, {
-      text: editableParagraph.innerText,
+      text: editableParagraph.innerText.trim(),
     });
   }
 }
 
-// await registerUser();
-// async function registerUser() {
-//   try {
-//     const { user } = await createUserWithEmailAndPassword(
-//       nuxtApp.$auth,
-//       creds.email,
-//       creds.password
-//     );
-//     console.log("REG", user);
-//   } catch (error: unknown) {
-//     if (error instanceof Error) {
-//       // handle error
-//     }
-//   }
-// }
+// Scroll to section helper
+function scrollToSection(sectionId) {
+  mobileMenuOpen.value = false;
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+    activeSection.value = sectionId;
+  }
+}
 
-const openMenu = ref(false);
+// Initialize data
+onMounted(async () => {
+  try {
+    // Load content data
+    const collectionData = await fetchCollectionData('home', 'order');
+    content.value = collectionData;
+    
+    // Load images
+    images.value = await getImagesFromDirectory('images');
+    
+    // Load user data
+    const userData = window.localStorage.getItem('user');
+    if (userData) {
+      user.value = JSON.parse(userData);
+    }
+    
+    // Set up scroll observer for active section highlighting
+    setupScrollObserver();
+  } catch (error) {
+    console.error('Error initializing page data:', error);
+  }
+});
+
+// Observer to highlight active navigation item based on scroll
+function setupScrollObserver() {
+  const sections = document.querySelectorAll('section[id]');
+  const navObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          activeSection.value = entry.target.id;
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  
+  sections.forEach(section => {
+    navObserver.observe(section);
+  });
+}
 </script>
 
 <template>
-  <div class="w-full flex flex-col py-4 lg:py-10 items-center justify-center">
-    <nav
-      class="flex lg:max-w-[1122px] items-center w-full px-4 lg:px-0 justify-between lg:justify-normal"
-      id="home"
-      v-if="content"
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header Navigation -->
+    <header 
+      class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      :class="{'bg-white shadow-lg': activeSection !== 'home', 'bg-transparent': activeSection === 'home'}"
     >
-      <!-- MOBILE MENU -->
-      <div
-        v-if="openMenu"
-        class="menu fixed right-0 py-4 rounded-tl-[36px] w-3/4 top-0 bottom-0 z-[99999] bg-white h-screen shadow"
-      >
-        <div class="flex px-4 text-red-400">
-          <!-- MENU CLOSE BUTTON -->
-          <button class="relative" @click="openMenu = false">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
+      <div class="container mx-auto px-4 lg:px-8">
+        <nav class="flex items-center justify-between h-20 lg:h-24">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <div class="relative h-16 w-16 lg:h-20 lg:w-20 flex-shrink-0">
+              <div class="absolute inset-0 rounded-full bg-gradient-to-b from-blue-800 to-blue-600 shadow-lg"></div>
+              <div class="absolute inset-1 rounded-full bg-white flex items-center justify-center">
+                <div class="h-full w-full rounded-full bg-cover bg-center bg-no-repeat bg-[url('/logo.png')]"></div>
+              </div>
+            </div>
+            <div class="ml-3 lg:ml-4">
+              <h1 class="text-xl lg:text-2xl font-bold text-blue-900 leading-tight">KAPSABET HIGHLANDS</h1>
+              <p class="text-sm lg:text-base text-gray-600 font-light">SCHOOL</p>
+            </div>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden lg:flex items-center space-x-8">
+            <template v-if="content">
+              <template v-for="item in content" :key="item.id">
+                <a
+                  v-if="!item.data.type"
+                  href="#"
+                  @click.prevent="scrollToSection(item.data.text.toLowerCase())"
+                  :class="[
+                    'text-base font-medium transition-colors hover:text-blue-600',
+                    activeSection === item.data.text.toLowerCase() ? 'text-blue-600' : 'text-gray-700'
+                  ]"
+                  :id="item.id + 'home-nav'"
+                  @blur="() => handleChange(item.id, item.id + 'home-nav')"
+                  tabindex="1"
+                  :contenteditable="isEdit"
+                >{{ item.data.text }}</a>
+                
+                <a
+                  v-if="item.data.type === 'button'"
+                  href="#contact"
+                  @click.prevent="scrollToSection('contact')"
+                  class="px-6 py-2.5 bg-red-600 text-white rounded-md font-medium text-sm shadow-sm hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  :id="item.id + 'home-button'"
+                  @blur="() => handleChange(item.id, item.id + 'home-button')"
+                  tabindex="1"
+                  :contenteditable="isEdit"
+                >{{ item.data.text }}</a>
+              </template>
+            </template>
+
+            <!-- Edit/Save Button for Admins -->
+            <button
+              v-if="isLoggedIn"
+              @click="isEdit = !isEdit"
+              class="px-4 py-2 bg-indigo-100 text-indigo-800 rounded-md font-medium text-sm hover:bg-indigo-200 transition-colors"
             >
-              <path
-                fill="currentColor"
-                d="m8.4 17l3.6-3.6l3.6 3.6l1.4-1.4l-3.6-3.6L17 8.4L15.6 7L12 10.6L8.4 7L7 8.4l3.6 3.6L7 15.6L8.4 17Zm3.6 5q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"
-              />
+              {{ isEdit ? 'Save Changes' : 'Edit Mode' }}
+            </button>
+
+            <!-- Authentication Button -->
+            <button 
+              v-if="isLoggedIn" 
+              @click="logout"
+              class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md font-medium text-sm hover:bg-gray-300 transition-colors"
+            >
+              Logout
+            </button>
+            <a 
+              v-else 
+              href="/login"
+              class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md font-medium text-sm hover:bg-gray-300 transition-colors"
+            >
+              Login
+            </a>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button 
+            class="lg:hidden text-gray-700 focus:outline-none"
+            @click="mobileMenuOpen = !mobileMenuOpen"
+          >
+            <svg 
+              v-if="!mobileMenuOpen"
+              xmlns="http://www.w3.org/2000/svg" 
+              class="h-6 w-6" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg 
+              v-else
+              xmlns="http://www.w3.org/2000/svg" 
+              class="h-6 w-6" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Menu -->
+    <div 
+      v-if="mobileMenuOpen"
+      class="fixed inset-0 z-40 lg:hidden bg-white"
+    >
+      <div class="flex flex-col h-full">
+        <div class="flex items-center justify-between p-4 border-b">
+          <div class="flex items-center">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-b from-blue-800 to-blue-500 p-0.5">
+              <div class="h-full w-full rounded-full bg-white bg-cover bg-center bg-[url('/logo.png')]"></div>
+            </div>
+            <div class="ml-3">
+              <h1 class="text-lg font-bold text-blue-900">KAPSABET HIGHLANDS</h1>
+              <p class="text-xs text-gray-600">SCHOOL</p>
+            </div>
+          </div>
+          <button 
+            class="text-gray-700"
+            @click="mobileMenuOpen = false"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-
-        <ul class="flex flex-col gap-0 mt-6 text-lg divide-y" v-if="content">
-          <li
-            :key="i.id"
-            v-for="i in content"
-            class="w-full px-5 py-2 hover:bg-gray-200 hover:text-red-500"
-          >
-            <a
-              class="text-[#002261]"
-              contenteditable="true"
-              :id="i.id + 'home-2'"
-              @blur="() => handleChange(i.id, i.id + 'home-2')"
-              tabindex="1"
+        
+        <div class="flex-grow overflow-y-auto">
+          <ul class="py-2" v-if="content">
+            <li 
+              v-for="item in content" 
+              :key="item.id"
+              class="border-b border-gray-100 last:border-b-0"
             >
-              {{ i.data.text }}
+              <a
+                v-if="!item.data.type"
+                @click="scrollToSection(item.data.text.toLowerCase())"
+                class="block px-4 py-3 text-gray-800 hover:bg-gray-50 hover:text-blue-600"
+                :class="{'text-blue-600 font-medium': activeSection === item.data.text.toLowerCase()}"
+                :id="item.id + 'mobile-nav'"
+                @blur="() => handleChange(item.id, item.id + 'mobile-nav')"
+                tabindex="1"
+                :contenteditable="isEdit"
+              >
+                {{ item.data.text }}
+              </a>
+              
+              <a
+                v-if="item.data.type === 'button'"
+                @click="scrollToSection('contact')"
+                class="block px-4 py-3 text-red-600 font-medium hover:bg-red-50"
+                :id="item.id + 'mobile-button'"
+                @blur="() => handleChange(item.id, item.id + 'mobile-button')"
+                tabindex="1"
+                :contenteditable="isEdit"
+              >
+                {{ item.data.text }}
+              </a>
+            </li>
+          </ul>
+          
+          <div class="p-4 space-y-2">
+            <button
+              v-if="isLoggedIn"
+              @click="isEdit = !isEdit"
+              class="w-full px-4 py-2 bg-indigo-100 text-indigo-800 rounded-md font-medium text-sm hover:bg-indigo-200 transition-colors"
+            >
+              {{ isEdit ? 'Save Changes' : 'Edit Mode' }}
+            </button>
+            
+            <button 
+              v-if="isLoggedIn" 
+              @click="logout"
+              class="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md font-medium text-sm hover:bg-gray-300 transition-colors"
+            >
+              Logout
+            </button>
+            <a 
+              v-else 
+              href="/login"
+              class="block w-full px-4 py-2 bg-gray-200 text-center text-gray-800 rounded-md font-medium text-sm hover:bg-gray-300 transition-colors"
+            >
+              Login
             </a>
-          </li>
-        </ul>
-      </div>
-      <div
-        class="logo lg:-mr-10 z-50 flex-none p-2 lg:p-4 h-[100px] aspect-square lg:h-[203px] bg-gradient-to-b from-[#002261] to-[#fff] lg:w-[203px] rounded-full flex items-center justify-center"
-      >
-        <div
-          class="h-full w-full rounded-full bg-cover bg-no-repeat bg-white bg-[url('/logo.png')]"
-        ></div>
-      </div>
-
-      <!-- MOBILE HUMBURGUR -->
-      <div @click="openMenu = true">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 10h16M4 14h16M4 18h16"
-          />
-        </svg>
-      </div>
-
-      <div
-        class="hidden bg-white w-full lg:w-[915px] rounded-[49px] h-[92px] justify-end lg:flex items-center"
-      >
-        <div class="flex gap-4 items-center" v-if="content">
-          <template v-for="i in content">
-            <a
-              href="#"
-              :key="i.id"
-              :id="i.id + 'home-3'"
-              @blur="() => handleChange(i.id, i.id + 'home-3')"
-              tabindex="1"
-              :class="isEdit ? 'border rounded border-[#113]' : ''"
-              class="text-[20px] text-[#000]"
-              :contenteditable="isEdit"
-              v-if="!i.data.type"
-              >{{ i.data.text }}</a
-            >
-            <a
-              :key="i.id"
-              class="bg-[#FE0A09] text-white rounded-[14px] px-6 py-2 text-xl"
-              href="#contact"
-              :id="i.id + 'home'"
-              @blur="() => handleChange(i.id, i.id + 'home')"
-              tabindex="1"
-              :contenteditable="isEdit"
-              v-if="i.data.type == 'button'"
-            >
-              {{ i.data.text }}
-            </a>
-          </template>
-
-          <a
-            class="bg-[#563ad454] cursor-pointer text-white rounded-[14px] px-6 py-2 text-xl"
-            @click.prevent="isEdit = !isEdit"
-            v-if="isLoggedIn"
-          >
-            {{ isEdit ? 'Save' : 'Edit' }}
-          </a>
-
-          <div>
-            <!-- Example of conditional rendering based on login status -->
-            <button v-if="isLoggedIn" @click="logout">Logout</button>
-            <a v-else href="/login">Login</a>
           </div>
         </div>
       </div>
-    </nav>
+    </div>
 
-    <!-- HERO SECTION -->
-    <VueCarousel
-      class="my-10 lg:my-20"
-      v-if="images"
-      :images="images"
-      :isEdit="isEdit"
-      :isLoggedIn="isLoggedIn"
-    />
+    <!-- Main Content -->
+    <main class="pt-20 lg:pt-24">
+      <!-- Hero Section -->
+      <section id="home" class="relative">
+        <VueCarousel
+          class="w-full"
+          v-if="images"
+          :images="images"
+          :isEdit="isEdit"
+          :isLoggedIn="isLoggedIn"
+        />
+        
+        <!-- Hero Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-blue-900/30 pointer-events-none"></div>
+      </section>
 
-    <!-- FEATURE SECTION -->
-    <Feature :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+      <!-- Features Section -->
+      <section id="features" class="py-16 lg:py-24 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
+            Our <span class="text-red-600">Features</span>
+          </h2>
+          <Feature :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
 
-    <!-- DIRECTORS MESSAGE -->
-    <DirectorsMessage :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
-    <!-- ABOUT US -->
-    <Aboutus :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+      <!-- Director's Message -->
+      <section id="message" class="py-16 lg:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
+            Director's <span class="text-red-600">Message</span>
+          </h2>
+          <DirectorsMessage :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
 
-    <!-- STATISTICS -->
-    <Statistics :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+      <!-- About Us -->
+      <section id="about" class="py-16 lg:py-24 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
+            About <span class="text-red-600">Us</span>
+          </h2>
+          <Aboutus :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
 
-    <WhyUs :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+      <!-- Statistics -->
+      <section id="statistics" class="py-16 lg:py-24 bg-blue-900 text-white">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-white mb-12">
+            Our <span class="text-red-400">Statistics</span>
+          </h2>
+          <Statistics :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
 
-    <Gallery :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+      <!-- Why Us -->
+      <section id="why-us" class="py-16 lg:py-24 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
+            Why <span class="text-red-600">Choose Us</span>
+          </h2>
+          <WhyUs :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
 
-    <Contact :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+      <!-- Gallery -->
+      <section id="gallery" class="py-16 lg:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
+            Our <span class="text-red-600">Gallery</span>
+          </h2>
+          <Gallery :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
 
-    <footer class="py-20">
-      <div class="container px-4 mx-auto lg:px-20">
-        <div
-          class="flex flex-wrap lg:flex-nowrap justify-center w-full gap-10 items-center"
-        >
-          <div>
-            <div
-              class="logo z-50 flex-none p-4 h-[203px] bg-gradient-to-b from-[#002261] to-[#fff] w-[203px] rounded-full flex items-center justify-center"
-            >
-              <div
-                class="h-full w-full rounded-full bg-cover bg-no-repeat bg-white bg-[url('/logo.png')]"
-              ></div>
+      <!-- Contact -->
+      <section id="contact" class="py-16 lg:py-24 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
+            Contact <span class="text-red-600">Us</span>
+          </h2>
+          <Contact :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white pt-16 pb-8">
+      <div class="container mx-auto px-4 lg:px-8">
+        <!-- Footer Top -->
+        <div class="flex flex-col lg:flex-row justify-between mb-12 gap-8">
+          <!-- School Info -->
+          <div class="lg:w-1/3">
+            <div class="flex items-center mb-6">
+              <div class="h-16 w-16 rounded-full bg-gradient-to-b from-blue-700 to-blue-500 p-0.5">
+                <div class="h-full w-full rounded-full bg-white bg-cover bg-center bg-[url('/logo.png')]"></div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-xl font-bold">KAPSABET HIGHLANDS</h3>
+                <p class="text-blue-200">SCHOOL</p>
+              </div>
             </div>
+            <p class="text-blue-200 mb-4">
+              Nurturing excellence and cultivating future leaders through quality education
+              and holistic development.
+            </p>
           </div>
-          <div class="text-[43px] lg:text-[55px]">
-            <h4 class="font-extrabold text-[#002261]">KAPSABET HIGHLANDS</h4>
-            <h5 class="font-light">SCHOOL</h5>
+          
+          <!-- Quick Links -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 border-b border-blue-800 pb-2">Quick Links</h4>
+            <ul class="space-y-2" v-if="content">
+              <li v-for="item in content.filter(i => !i.data.type)" :key="item.id">
+                <a 
+                  @click="scrollToSection(item.data.text.toLowerCase())"
+                  class="text-blue-200 hover:text-white transition-colors"
+                >
+                  {{ item.data.text }}
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- Contact Information -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 border-b border-blue-800 pb-2">Contact Information</h4>
+            <ul class="space-y-2">
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-300 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-blue-200">Kapsabet, Kenya</span>
+              </li>
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-300 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+                <span class="text-blue-200">info@kapsabethighlands.co.ke</span>
+              </li>
+              <li class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-300 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
+                <span class="text-blue-200">+254 700 000000</span>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="flex justify-center text-sm lg:text-base items-center">
-          <span>copyright@2023 kapsabethighlands.co.ke</span>
+        
+        <!-- Footer Bottom -->
+        <div class="pt-8 border-t border-blue-800 text-center text-blue-300 text-sm">
+          <p>© {{ new Date().getFullYear() }} Kapsabet Highlands School. All rights reserved.</p>
         </div>
       </div>
     </footer>
   </div>
 </template>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --primary-color: #002261;
+  --secondary-color: #FE0A09;
+  --accent-color: #e3f2fd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: #212121;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Transitions */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #002261;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #001a4d;
+}
+</style>
