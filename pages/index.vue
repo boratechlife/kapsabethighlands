@@ -375,9 +375,7 @@ function setupScrollObserver() {
       <!-- About Us -->
       <section id="about" class="py-16 lg:py-24 bg-white">
         <div class="container mx-auto px-4 lg:px-8">
-          <h2 class="text-3xl lg:text-4xl font-bold text-center text-blue-900 mb-12">
-            About <span class="text-red-600">Us</span>
-          </h2>
+
           <Aboutus :isEdit="isEdit" :isLoggedIn="isLoggedIn" />
         </div>
       </section>

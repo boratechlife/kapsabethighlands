@@ -1,24 +1,16 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import {
-  collection,
-  doc,
-  getDocs,
-  getFirestore,
-  orderBy,
-  query,
-  updateDoc,
-} from 'firebase/firestore';
+import { Auth, getAuth } from 'firebase/auth';
+import { getFirestore, collection, doc, getDocs, query, orderBy, updateDoc, Firestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  listAll,
-  getDownloadURL,
-} from 'firebase/storage';
+import { getStorage, ref, uploadBytes, listAll, getDownloadURL, FirebaseStorage } from 'firebase/storage';
 
-export default defineNuxtPlugin(async (nuxtApp) => {
+let app;
+let analytics;
+let auth: Auth;
+let firestore: Firestore;
+let storage: FirebaseStorage;
+
+async function initializeFirebase() {
   const config = useRuntimeConfig();
 
   const firebaseConfig = {
@@ -31,77 +23,64 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     measurementId: config.public.FB_MEASUREMENT_ID,
   };
 
-  const app = initializeApp(firebaseConfig);
+  app = initializeApp(firebaseConfig);
+  analytics = getAnalytics(app);
+  auth = getAuth(app);
+  firestore = getFirestore(app);
+  storage = getStorage(app);
+}
 
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
-  const storage = getStorage(app);
+async function uploadImage(file, fileName, folder = 'images') {
+  if (!storage) await initializeFirebase();
 
-  async function uploadImage(
-    file: Blob | Uint8Array | ArrayBuffer,
-    fileName: string,
-    folder = 'images'
-  ) {
-    try {
-      const storageRef = ref(storage, `${folder}/${fileName}`);
-      await uploadBytes(storageRef, file);
-      console.log(`Image ${fileName} uploaded successfully.`);
+  try {
+    const storageRef = ref(storage, `${folder}/${fileName}`);
+    await uploadBytes(storageRef, file);
+    console.log(`Image ${fileName} uploaded successfully.`);
 
-      // Get the download URL
-      const downloadURL = await getDownloadURL(storageRef);
-      console.log(`Uploaded image is available at ${downloadURL}`);
+    const downloadURL = await getDownloadURL(storageRef);
+    console.log(`Uploaded image is available at ${downloadURL}`);
 
-      return downloadURL; // Return the URL of the uploaded file
-    } catch (error) {
-      console.error(`Error uploading image ${fileName}:`, error);
-      return null; // Return null or handle the error as needed
-    }
+    return downloadURL;
+  } catch (error) {
+    console.error(`Error uploading image ${fileName}:`, error);
+    return null;
   }
+}
 
-  async function getImagesFromDirectory(directory: string | undefined) {
-    const storageRef = ref(storage, directory);
-    const files = await listAll(storageRef);
+async function getImagesFromDirectory(directory: string | undefined) {
+  if (!storage) await initializeFirebase();
 
-    const imageURLs = [];
+  const storageRef = ref(storage, directory);
+  const files = await listAll(storageRef);
 
-    for (const file of files.items) {
-      const imageUrl = await getDownloadURL(file);
-      imageURLs.push(imageUrl);
-    }
+  const imageURLs = await Promise.all(files.items.map(async (file) => {
+    return await getDownloadURL(file);
+  }));
 
-    return imageURLs;
-  }
+  return imageURLs;
+}
 
-  async function getCollectionData(collectionName: string, order: string) {
-    // const querySnapshot = await getDocs(collection(firestore, collectionName).orderBy("name"));
-    let querySnapshot = null;
-    if (order.length > 0) {
-      querySnapshot = await getDocs(
-        query(collection(firestore, collectionName), orderBy(order))
-      );
-    } else {
-      querySnapshot = await getDocs(
-        query(collection(firestore, collectionName))
-      );
-    }
+async function getCollectionData(collectionName: string, order = '') {
+  if (!firestore) await initializeFirebase();
 
-    const documents: { id: any; data: any }[] = [];
-    querySnapshot.forEach((doc: { id: any; data: () => any }) => {
-      documents.push({ id: doc.id, data: doc.data() });
-    });
+  const collectionRef = collection(firestore, collectionName);
+  const q = order ? query(collectionRef, orderBy(order)) : query(collectionRef);
+  const querySnapshot = await getDocs(q);
 
-    return documents;
-  }
+  return querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+}
 
-  async function updateMenu(colTable: any, menuId: any, editedMenu: any) {
-    const washingtonRef = doc(firestore, colTable, menuId);
+async function updateMenu(colTable: string, menuId: string, editedMenu: any) {
+  if (!firestore) await initializeFirebase();
 
-    console.log('Wash', washingtonRef);
-    const updated = await updateDoc(washingtonRef, editedMenu);
+  const washingtonRef = doc(firestore, colTable, menuId);
+  await updateDoc(washingtonRef, editedMenu);
+  console.log('Menu updated successfully');
+}
 
-    console.log('Updated', updated);
-  }
+export default defineNuxtPlugin(async (nuxtApp) => {
+  await initializeFirebase();
 
   nuxtApp.vueApp.provide('auth', auth);
   nuxtApp.provide('auth', auth);
@@ -115,7 +94,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   nuxtApp.provide('fetchCollection', getCollectionData);
   nuxtApp.provide('getImagesFromDirectory', getImagesFromDirectory);
 
-  // TOPBAR TEXT
   nuxtApp.vueApp.provide('updateMenu', updateMenu);
   nuxtApp.provide('updateMenu', updateMenu);
 });
